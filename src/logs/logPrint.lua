@@ -60,5 +60,5 @@ return function (mod,...)
     end
     
     table.insert(tb_lis,"\n")
-    return print(table.concat(tb_lis))
+    return print(table.concat(tb_lis)) 
 end

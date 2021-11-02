@@ -1,7 +1,7 @@
 package = "tools"
 version = "1.0.0-1"
 source = {
-   url = "git:github.com:lualcs/tools",
+   url = "git://github.com:lualcs/tools",
    tag = "v1-0-0",
 }
 description = {
@@ -10,7 +10,7 @@ description = {
       This module mocks the following OpenResty APIs:
 
    ]],
-   homepage = "git:github.com:lualcs/tools",
+   homepage = "git://github.com:lualcs/tools",
    license = "MIT"
 }
 dependencies = {

@@ -2,7 +2,6 @@ package = "tools"
 version = "1.0.0-1"
 source = {
    url = "git://github.com/lualcs/tools",
-   tag = "v1-0-0",
 }
 description = {
    summary = "An extra mocking layer for OpenResty in busted testing environment.",

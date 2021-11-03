@@ -1,7 +1,7 @@
-package = "tools"
+package = "luaTools"
 version = "1.0.0-2"
 source = {
-   url = "git://github.com/lualcs/tools",
+   url = "git://github.com/lualcs/luaTools",
 }
 description = {
    summary = "An extra mocking layer for OpenResty in busted testing environment.",
@@ -9,7 +9,7 @@ description = {
       This module mocks the following OpenResty APIs:
 
    ]],
-   homepage = "git://github.com/lualcs/tools",
+   homepage = "git://github.com/lualcs/luaTools",
    license = "MIT"
 }
 dependencies = {

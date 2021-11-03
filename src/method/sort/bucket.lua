@@ -2,7 +2,7 @@ local math = math
 local table = table
 local ipairs = ipairs
 local clear = require("table.clear")
-local fminmax = require("array.minmaxNumber")
+local fminmax = require("array.minmax")
 
 local copy1 = {}
 ---桶排序

@@ -4,9 +4,9 @@
 
 local ipairs = ipairs
 local zero = require("table.zero")
-local fmax = require("array.maxNumber")
-local fmin = require("array.minNumber")
-local fminmax = require("array.minmaxNumber")
+local fmax = require("array.max")
+local fmin = require("array.min")
+local fminmax = require("array.minmax")
 
 local copy1 = {nil}
 

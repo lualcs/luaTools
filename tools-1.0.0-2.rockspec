@@ -1,5 +1,5 @@
 package = "tools"
-version = "1.0.0-1"
+version = "1.0.0-2"
 source = {
    url = "git://github.com/lualcs/tools",
 }
@@ -79,9 +79,9 @@ build = {
       ["array.merge"] = "src/method/array/merge.lua",
       ["array.call"] = "src/method/array/call.lua",
       ["array.map"] = "src/method/array/map.lua",
-      ["array.maxNumber"] = "src/method/array/maxNumber.lua",
-      ["array.minmaxNumber"] = "src/method/array/minmaxNumber.lua",
-      ["array.minNumber"] = "src/method/array/minNumber.lua",
+      ["array.max"] = "src/method/array/max.lua",
+      ["array.minmax"] = "src/method/array/minmax.lua",
+      ["array.min"] = "src/method/array/min.lua",
       ["array.rand"] = "src/method/array/rand.lua",
       ["array.sum"] = "src/method/array/sum.lua",
       ["array.wgtSum"] = "src/method/array/wgtSum.lua",

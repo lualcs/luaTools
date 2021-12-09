@@ -65,7 +65,6 @@ local function _t2sList(list,val,level,key)
 	end
 	
 	if ifTable(val) then
-		table.insert( list,"\r\n")
 		table.insert( list,indent)
 	else
 		return

@@ -5,7 +5,7 @@
 
 local table = table
 local string = string
-local clear = require("clear")
+local clear = require("table.clear")
 
 --[[
 	字符串分割 支持正则

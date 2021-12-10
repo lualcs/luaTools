@@ -14,14 +14,14 @@ local clear = require("table.clear")
 	return: {}拆分出来的序列表
 ]]
 
-local copy1 = {nil}
 ---字符串分割
 ---@param s string @字符
 ---@param p string @分割
+---@param out table|nil @out
 ---@return string[]
-local function localf(s, p)
+local function localf(s, p ,out)
 	local init = 1
-	local ret = clear(copy1)
+	local ret = out or {}
 
 	repeat
 		---字符串查找

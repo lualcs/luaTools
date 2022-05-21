@@ -1,8 +1,8 @@
-
-local type = type
----@type ifNil
+---是否nil
+---@param v any @数据 
+---@return boolean
 return function(v)
-	return 'nil' == type(v)
+    return 'nil' == type(v)
 end
 
----@alias ifNil fun(v:any):boolean 
+

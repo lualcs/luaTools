@@ -1,9 +1,8 @@
-
-local type = type
----@type ifFunction
+---是否函数
+---@param v any @数据
+---@return boolean
 return function(v)
-	return 'function' == type(v)
+    return 'function' == type(v)
 end
 
 
----@alias ifFunction fun(v:any):boolean 

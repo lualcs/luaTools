@@ -1,8 +1,8 @@
-
-local type = type
----@type ifString
+---是否字符串
+---@param v any @数据
+---@return boolean
 return function(v)
-	return 'string' == type(v)
+    return 'string' == type(v)
 end
 
----@alias ifString fun(v:any):boolean 
+

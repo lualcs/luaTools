@@ -2,8 +2,8 @@
 ---@param t any[] @数组
 ---@param count count @倒数第几
 ---@return any
-local function localf(t,count)
-	return t[#t-(count or 0)]
+return function(t, count)
+    return t[#t - (count or 1) - 1]
 end
 
-return localf
+

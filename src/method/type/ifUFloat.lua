@@ -1,6 +1,15 @@
----@type ifUFloat
+---是否非负数浮点数
+---@param v any @参数
 return function(v)
-    return 0 ~= v % 1 and v >= 0
+    if type(v) ~= "number" then
+        return false
+    elseif v < 0 then
+        return false
+    elseif 0 == v % 1 then
+        return false
+    end
+    
+    return true
 end
 
----@alias ifUFloat fun(v:any):boolean 
+

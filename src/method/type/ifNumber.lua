@@ -1,6 +1,8 @@
-
-local type = type
----@type ifNumber
+---是否数值
+---@param v any 数据
+---@return boolean
 return function(v)
-	return 'number' == type(v)
+    return 'number' == type(v)
 end
+
+

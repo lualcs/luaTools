@@ -1,7 +1,14 @@
-local ifNumber = require("ifNumber")
----@type ifNumber
+---是否整数
+---@param v any @参数
 return function(v)
-	return ifNumber(v) and 0 == v%1
+    if "number" ~= type(v) then 
+        return false
+    elseif 0 ~= v % 1 then
+        return false
+    end
+
+    return true
 end
 
----@alias ifNumber fun(v:any):boolean 
+
+

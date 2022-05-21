@@ -1,8 +1,4 @@
---[[
-    auth:Carol Luo
-]]
-
 local logPrint = require("logPrint")
 return function(...)
-    return logPrint("logDebug",...)
+    return logPrint("logDebug", ...)
 end

@@ -1,69 +1,63 @@
---[[
-    desc:(特殊拷贝)
-    auth:Carol Luo
-]]
-
-local next = next
-local table = table
-local pairs = pairs
-local setmetatable = setmetatable
 local ifTable = require("ifTable")
 local clone = require("table.clone")
 
 ---代理拷贝
 ---@generic T:any
 ---@param src table @默认值表
----@param shell fun(cmd:string):boolean @命令
----@return fun(tag:true|nil):T
-local function localf(src,shell)
+---@param refuse fun(cmd:string):boolean @拒绝
+---@return fun(out:T|nil):T
+return function(src, refuse)
 
-    local meta = {__index = src}
-    if shell and shell("pairs") then
+    local meta = { __index = src }
+    if not (refuse and refuse("pairs")) then
         ---是否支持pairs
         local arr = {}
         local map = {}
-        local ptr = {}
         local idx = 0
         for key, val in pairs(src) do
             idx = idx + 1
             arr[idx] = key
             map[key] = idx
-            if ifTable(val) then
-                ptr[key] = true
+        end
+
+        local function rpairs(t, k)
+            if nil == k then
+                k = arr[1]
+            else
+                k = arr[map[k] + 1]
             end
+
+            return k, t[k]
         end
 
         function meta.__pairs(t)
-            local iterator = function(t,k)
-                if nil == k then
-                    k = arr[1]
-                else
-                    k = arr[map[k] + 1]
-                end
-                return k,t[k]
-            end
-            return iterator,t,nil
+            return rpairs, t, nil
         end
     end
-    
+
     local new = nil
-    ---@type fun():T
-    return function()
-        if shell and shell("single") then
-            if new then 
+    return function(out)
+        if (not refuse) or not (refuse("single")) then
+            if new then
+                ---表示只有一份
                 return new
             end
         end
 
-        new = {}
-        if shell and shell("clone") then
+        new = out or {}
+        if not (refuse and refuse("clone")) then
             ---table数据重新拷贝一份
-            for k,_ in pairs(ptr) do
-                new[k] = clone(src[k])
+            for k, v in pairs(src) do
+                if ifTable(v) then
+                    if not new[k] then
+                        new[k] = clone(v)
+                    end
+                end
             end
         end
-        return setmetatable(new,meta)
+
+        return setmetatable(new, meta)
     end
 end
 
-return localf
+

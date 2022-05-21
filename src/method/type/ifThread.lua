@@ -1,8 +1,8 @@
-
-local type = type
----@type ifThread
+---是否协程
+---@param v any @数据
+---@return boolean
 return function(v)
-	return 'thread' == type(v)
+    return 'thread' == type(v)
 end
 
----@alias ifThread fun(v:any):boolean 
+

@@ -1,0 +1,5 @@
+1.语法验证
+luarocks lint luatools-1.0.0-6.rockspec
+
+2.构建打包
+luarocks make

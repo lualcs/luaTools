@@ -1,8 +1,8 @@
-
-local type = type
----@type ifTable
+---是否table
+---@param v any @数据 
+---@return boolean
 return function(v)
-	return 'table' == type(v)
+    return 'table' == type(v)
 end
 
----@alias ifTable fun(v:any):boolean 
+

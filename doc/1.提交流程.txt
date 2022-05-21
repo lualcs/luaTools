@@ -3,3 +3,6 @@ luarocks lint luatools-1.0.0-6.rockspec
 
 2.构建打包
 luarocks make
+
+3.打包上传
+luarocks pack luatools-1.0.0-6.rockspec

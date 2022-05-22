@@ -1,5 +1,5 @@
 package = "luatools"
-version = "1.0.0-6"
+version = "1.0.0-7"
 source = {
    url = "git://github.com/lualcs/luaTools",
 }

@@ -1,5 +1,5 @@
 package = "luatools"
-version = "1.0.0-7"
+version = "1.0.0-8"
 source = {
    url = "git://github.com/lualcs/luaTools",
 }
@@ -36,6 +36,7 @@ build = {
       ifWeek = "src/method/type/ifWeek.lua",
       ifKeyword = "src/method/type/ifKeyword.lua",
       ifLetter = "src/method/type/ifLetter.lua",
+      ifSymbol = "src/method/type/ifSymbol.lua",
       tvoid = "src/method/tools/tvoid.lua",
       toguess = "src/method/tools/toguess.lua",
       class = "src/method/tools/class.lua",

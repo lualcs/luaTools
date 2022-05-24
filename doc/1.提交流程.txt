@@ -1,11 +1,11 @@
 1.语法验证
-luarocks lint luatools-1.0.0-7.rockspec
+luarocks lint luatools-1.0.0-8.rockspec
 
 2.构建打包
 luarocks make
 
 3.打包上传
-luarocks pack luatools-1.0.0-7.rockspec
+luarocks pack luatools-1.0.0-8.rockspec
 
 4.命令上传
-luarocks upload --api-key=QX2L9aIa2dDmghD10atSTpOf9qfsESuyJ46t9zxM luatools-1.0.0-7.rockspec
+luarocks upload --api-key=QX2L9aIa2dDmghD10atSTpOf9qfsESuyJ46t9zxM luatools-1.0.0-8.rockspec

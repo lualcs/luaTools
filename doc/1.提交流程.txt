@@ -8,4 +8,5 @@ luarocks make
 luarocks pack luatools-1.0.0-8.rockspec
 
 4.命令上传
+luarocks upload luatools-1.0.0-8.rockspec
 luarocks upload --api-key=QX2L9aIa2dDmghD10atSTpOf9qfsESuyJ46t9zxM luatools-1.0.0-8.rockspec

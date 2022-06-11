@@ -51,9 +51,14 @@ build = {
       ranking = "src/custom/ranking.lua",
       reusable = "src/custom/reusable.lua",
       tigger = "src/custom/tigger.lua",
+      timer = "src/coustom/timer.lua"
       logDebug = "src/logs/logDebug.lua",
       logError = "src/logs/logError.lua",
       logPrint = "src/logs/logPrint.lua",
+      api_json = "src/system/api_json.lua",
+      api_lfs = "src/system/api_lfs.lua",
+      api_lpeg = "src/system/api_lpeg.lua",
+      api_md5 = "src/system/api_md5.lua",  
       ["vessel.heap"] = "src/vessel/heap.lua",
       ["vessel.list"] = "src/vessel/list.lua",
       ["vessel.map"] = "src/vessel/map.lua",
@@ -151,10 +156,6 @@ build = {
       ["optimize.commit"] = "src/method/optimize/commit.lua",
       ["optimize.rollback"] = "src/method/optimize/rollback.lua",
       ["optimize.transaction"] = "src/method/optimize/transaction.lua",
-      ["api_json"] = "src/system/api_json.lua",
-      ["api_lfs"] = "src/system/api_lfs.lua",
-      ["api_lpeg"] = "src/system/api_lpeg.lua",
-      ["api_md5"] = "src/system/api_md5.lua",
-      
+      ["singleClass.timer"] = "src/coustom/timer.lua" 
    }
 }

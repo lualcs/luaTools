@@ -156,6 +156,6 @@ build = {
       ["optimize.commit"] = "src/method/optimize/commit.lua",
       ["optimize.rollback"] = "src/method/optimize/rollback.lua",
       ["optimize.transaction"] = "src/method/optimize/transaction.lua",
-      ["singleClass.timer"] = "src/coustom/timer.lua" 
+      ["singleClass.timer"] = "src/singleClass/timer.lua" 
    }
 }

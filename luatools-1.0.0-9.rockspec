@@ -150,6 +150,7 @@ build = {
       ["time.microsecond"] = "src/method/time/microsecond.lua",
       ["time.millisecond"] = "src/method/time/millisecond.lua",
       timer = "src/custom/timer.lua",
+      unknown = "src/custom/unknown.lua",
       toguess = "src/method/tools/toguess.lua",
       tvoid = "src/method/tools/tvoid.lua",
       ["vessel.heap"] = "src/vessel/heap.lua",

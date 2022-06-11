@@ -1,5 +1,5 @@
 local class = require("class")
-local skynet = require("skynet")
+--local skynet = require("skynet")
 local reusable = require("reusable")
 local super = require("unknown")
 local heap = require("vessel.heap")

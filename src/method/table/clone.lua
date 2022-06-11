@@ -11,7 +11,7 @@ local filter = {
 ---@param t table @要拷贝的表
 ---@param out table @外带表
 ---@return table @新表
-function localf(t, out)
+local function localf(t, out)
     local new = clear(out) or {}
     for k, v in pairs(t) do
         if not filter[k] then

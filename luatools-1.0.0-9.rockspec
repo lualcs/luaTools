@@ -156,6 +156,12 @@ build = {
       ["vessel.heap"] = "src/vessel/heap.lua",
       ["vessel.list"] = "src/vessel/list.lua",
       ["vessel.map"] = "src/vessel/map.lua",
-      ["vessel.queue"] = "src/vessel/queue.lua"
+      ["vessel.queue"] = "src/vessel/queue.lua",
+      ["table.source"] = "src/method/table/source.lua",
+      cmahjong = {
+         sources = { "lua_cjson.c", "strbuf.c", "fpconv.c" },
+         defines = {
+         }
+      },
    }
 }

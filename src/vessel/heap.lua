@@ -6,7 +6,7 @@ local fauto = require("fauto")
 local class = require("class")
 local super = require("unknown")
 local reusable = require("reusable")
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 
 local reusable = reusable.new()
 ---@class vesselheap:unknown @堆数据
@@ -34,6 +34,10 @@ function this:ctor(comp)
     ---节点列表
     ---@type heapNode[]
     self._list = {}
+
+    ---节点排序
+    ---@type any[] @节点排序
+    self._order = {}
 
     ---比较函数
     ---@type fun(aNode:heapNode,bNdoe:heapNode):number
@@ -100,7 +104,6 @@ end
 ---@param tick  number   @更新比较
 function this:adjustBy(auto, tick)
     local index, node = self:search(auto)
-
     if node then
         node.ticks = tick
         self:adjust(node, index)
@@ -112,11 +115,9 @@ end
 ---@return  index,heapNode      @节点数据
 function this:search(auto)
     if auto then
-        local list = self._list
-
-        for index, node in ipairs(list) do
+        for i, node in ipairs(self._list) do
             if auto == node.auto then
-                return index, node
+                return i, node
             end
         end
     end
@@ -266,8 +267,8 @@ end
 ---遍历函数
 ---@param pos number @节点
 function this:order(pos)
-    if not self._list[pos] then 
-        return 
+    if not self._list[pos] then
+        return
     end
     table.insert(self._order, pos)
     self:order(pos * 2)
@@ -275,22 +276,25 @@ function this:order(pos)
 end
 
 ---迭代函数
+function this.next(t, k)
+    if nil == k then
+        k = 1
+    else
+        k = k + 1
+    end
+
+    local idx = t._order[k]
+    if not t._list[idx] then
+        k = nil
+    end
+    return k, t._list[idx]
+end
+
+---迭代函数
 function this:ipairs()
-    self._order = {}
+    clear(self._order)
     self:order(1)
-
-    return function(t, k)
-        if nil == k then
-            k = 1
-        else
-            k = k + 1
-        end
-
-        if not t[self._order[k]] then
-            k = nil
-        end
-        return k, t[self._order[k]]
-    end, self._list, nil
+    return self.next, self, nil
 end
 
 ---迭代函数

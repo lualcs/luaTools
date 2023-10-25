@@ -4,7 +4,7 @@
 ---@param filter    function|nil @过滤函数
 return function(t, filter, out)
     if out then
-        table.clear(out)
+        table.opt.clear(out)
     end
 
     local new = out or {}

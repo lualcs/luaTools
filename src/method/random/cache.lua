@@ -9,11 +9,9 @@ return function(list, map)
     local takeup = 0
     --记录
     local cache = setmetatable({}, {
-        __index = function(t, index)
-            return list[index]
-        end
+        __index = list
     })
-    
+
     local function closure(index)
         ---避免报错
         if takeup == capacity then
@@ -21,19 +19,19 @@ return function(list, map)
             index = math.random(1, capacity)
             return cache[index]
         end
-        
+
         ---记录未占用数据
         takeup = takeup + 1
         index = index or math.random(takeup, capacity)
         local value = cache[index]
-        
+
         ---更新剩余的数据
         cache[index] = cache[takeup]
         ---删除占用的数据
         cache[takeup] = nil
         return value
     end
-    
+
     ---设置排除项
     if map then
         for key, _ in pairs(map) do
@@ -44,6 +42,6 @@ return function(list, map)
             end
         end
     end
-    
-    return closure
+
+    return closure, cache
 end

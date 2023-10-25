@@ -15,6 +15,7 @@ end
 function this:clear()
     self._head = nil
     self._tail = nil
+    self._next = nil
     self._size = 0
 end
 
@@ -41,14 +42,14 @@ end
 ---尾部删除
 function this:pop_back()
     local tail = self._tail
-    if not tail then 
-        return 
+    if not tail then
+        return
     end
 
     local front = tail.front
     self._tail = front
-    if front then 
-        front.later = nil 
+    if front then
+        front.later = nil
     end
     reusable:set(tail)
 end
@@ -66,7 +67,7 @@ function this:insert(node, data)
     end
 end
 
----删除阶段
+---删除节点
 ---@param node any @数据节点
 function this:erase(node)
 
@@ -94,21 +95,26 @@ function this:erase(node)
 end
 
 ---迭代函数
+---@param t vessellist @链表对象
+---@param k any|nil    @访问键值
+function this.next(t, k)
+    if nil == k then
+        k = 1
+    else
+        k = k + 1
+        t._next = t._next and t._next.later
+    end
+    if t._next then
+        return k, t._next.data
+    else
+        return nil, nil
+    end
+end
+
+---迭代函数
 function this:ipairs()
-    local node = self._head
-    return function(t, k)
-        if nil == k then
-            k = 1
-        else
-            k = k + 1
-            node = node and node.later
-        end
-        if node then
-            return k, node.data
-        else
-            return nil, nil
-        end
-    end, self, nil
+    self._next = self._head
+    return this.next, self, nil
 end
 
 ---迭代函数

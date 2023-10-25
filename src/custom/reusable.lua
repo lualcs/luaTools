@@ -1,7 +1,7 @@
 local class = require("class")
 
 local super = require("unknown")
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 
 ---@class reusable:unknown @复用仓库
 local this = class(super)

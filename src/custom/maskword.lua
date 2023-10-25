@@ -1,5 +1,5 @@
 local class = require("class")
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 local cutworks = require("cutworks")
 local super = require("unknown")
 

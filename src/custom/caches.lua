@@ -1,6 +1,6 @@
 local class = require("class")
 local super = require("unknown")
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 local milli = require("time.millisecond")
 
 ---@class cacheUnit 缓存单元

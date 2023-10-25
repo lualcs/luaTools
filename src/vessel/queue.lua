@@ -82,18 +82,20 @@ function this:get_data(index)
 end
 
 ---迭代函数
+function this.next(t, k)
+    if nil == k then
+        k = 1
+    end
+    local pos = t._begin + k - 1
+    if not t._list[pos] then
+        k = nil
+    end
+    return k, t._list[pos]
+end
+
+---迭代函数
 function this:ipairs()
-    return function(t, k)
-        if nil == k then
-            k = 1
-        end
-        
-        local pos = self._begin + k - 1
-        if not t[pos] then
-            k = nil
-        end
-        return k, t[pos]
-    end, self._list, nil
+    return self.next, self, nil
 end
 
 ---迭代函数

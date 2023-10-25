@@ -1,4 +1,4 @@
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 
 ---统计映射
 ---@param arr any[] @数组

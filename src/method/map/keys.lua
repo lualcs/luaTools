@@ -1,4 +1,4 @@
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 
 ---获取键值列表
 ---@param 	map     table<any,count>	@统计表

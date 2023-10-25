@@ -59,13 +59,7 @@ end
 
 ---迭代函数
 function this:pairs()
-    return function(map, k)
-        if nil == k then
-            return next(map)
-        else
-            return next(map, k)
-        end
-    end, self._map, nil
+    return next, self._map, nil
 end
 
 return this

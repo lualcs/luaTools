@@ -1,4 +1,4 @@
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 local copy1 = {}
 
 ---map移除

@@ -1,4 +1,4 @@
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 
 ---处理成连续表
 ---@param t table @表

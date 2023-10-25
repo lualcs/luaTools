@@ -7,6 +7,7 @@ local funs = {
     __index = true,
     __pairs = true,
     __call = true,
+    __mode = true,
     __len = true,
     __add = true,
     __div = true,
@@ -19,32 +20,34 @@ local funs = {
 
 }
 
----弱引用无效-暂时不知道原因
-local tabs = setmetatable({}, { __mod = "kv" })
+---弱引用
+local tabs = setmetatable({}, { __mode = "k" })
 local meta = {}
 function meta.__index(t, k)
     return tabs[t][k]
 end
 
 function meta.__newindex(t, k, v)
-    assert(false, "read only")
+    assert(false, "Constants cannot be written！")
 end
 
 function meta.__len(t)
     return rawlen(tabs[t])
 end
 
+local function _next(t, k)
+    local v
+    repeat
+        k, v = next(tabs[t], k)
+        if not funs[k] then
+            break
+        end
+    until false
+    return k, v
+end
+
 function meta.__pairs(t)
-    return function(t, k)
-        local v
-        repeat
-            k, v = next(tabs[t], k)
-            if not funs[k] then
-                break
-            end
-        until false
-        return k, v
-    end, t, nil
+    return _next, t, nil
 end
 
 return function(tab)

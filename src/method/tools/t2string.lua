@@ -1,5 +1,5 @@
 local ifTable = require("ifTable")
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 local ifNumber = require("ifNumber")
 local ifBoolean = require("ifBoolean")
 local ifString = require("ifString")

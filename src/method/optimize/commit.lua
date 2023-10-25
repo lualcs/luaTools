@@ -1,4 +1,4 @@
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 local caches = require("optimize.cache")
 ---数据变更
 local change = {}

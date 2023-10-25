@@ -1,5 +1,5 @@
 local class = require("class")
---local skynet = require("skynet")
+local skynet = require("skynet")
 local reusable = require("reusable")
 local super = require("unknown")
 local heap = require("vessel.heap")
@@ -9,23 +9,28 @@ local reusable = reusable.new()
 ---@class timer:unknown @定时管理器
 local this = class(super)
 
----构造 
+---构造
 function this:ctor()
     ---单纯执行
     self._maxloops = 100
     ---轮询间隔
-    ---@type number                 
+    ---@type number
     self._interval = 10
+    ---定时回调
+    ---@type fun()
+    self._callback = function()
+        self:callback()
+    end
     ---清理处理
     self:clear()
+    ---定时函数
+   
 end
 
 ---启动函数
 function this:launch()
     ---启动定时器
-    skynet.timeout(1, function()
-        self:poling()
-    end)
+    self:timeout()
 end
 
 ---清除数据
@@ -35,10 +40,10 @@ function this:clear()
     ---最大堆
     self._heap = heap.new()
     ---定时器
-    ---@type table<string,timeID> 
+    ---@type table<string,timeID>
     self._names = {}
     ---定时器
-    ---@type table<timeID,string>   
+    ---@type table<timeID,string>
     self._idens = {}
 end
 
@@ -93,12 +98,12 @@ function this:appendBy(name, elapse, count, call, ...)
     local names = self._names
     local iden = names[name]
     local indx, node = self._heap:search(iden)
-    
+
     if node then
         self._heap:delete(indx)
         idens[iden] = nil
     end
-    
+
     iden = self:append(elapse, count, call, ...)
     names[name] = iden
     idens[iden] = name
@@ -113,28 +118,38 @@ function this:appendEverBy(name, elapse, call, ...)
     return self:appendBy(name, elapse, nil, call, ...)
 end
 
+---重置一下执行时间
+---@param iden timeId @唯一定时器
+function this:resetTimer(iden)
+    ---找到数据
+    local _, tnode = self._heap:search(iden)
+    if not tnode then
+        return
+    end
+
+    ---重置时间
+    local tick = self:time() + tnode.data.elapse
+    self._heap:adjustBy(iden, tick)
+end
+
 ---删除定时
 ---@param iden    timeID      @定时器ID
-function this:remove(iden)
-    local heap  = self._heap
-    local list  = heap._list
+function this:removeByID(iden)
     local idens = self._idens
     local names = self._names
-    
-    for index, node in ipairs(list) do
-        if node.auto == iden then
-            --删除数据
-            heap:delete(index)
-            reusable:set(node.data)
-            --删除数据
-            local name = idens[iden]
-            
-            if name then
-                names[name] = nil
-                idens[iden] = nil
-            end
+    local tnode = self._heap:deleteBy(iden)
 
-            break
+    if tnode then
+        ---回收数据
+        reusable:set(tnode.data)
+
+        ---清除标识
+        idens[iden] = nil
+
+        ---全局标识
+        local name = names[iden]
+        if name then
+            names[name] = nil
         end
     end
 end
@@ -143,7 +158,7 @@ end
 ---@param iden timeID
 function this:remaining(iden)
     local now = self._pauset or self:time()
-    
+
     for _, item in ipairs(self._heap._list) do
         if item.auto == iden then
             return item.ticks - now
@@ -171,31 +186,31 @@ end
 ---暂停取消
 function this:unpause()
     local pause = self._pauset
-    
+
     if pause then
         self._pauset = nil
         local now = self:time()
         local dif = now - pause
-        
+
         for _, item in ipairs(self._heap._list) do
             item.ticks = item.ticks + dif
         end
-        
+
         --启动轮询
-        self:poling()
+        self:callback()
     end
 end
 
 ---定时轮询
-function this:poling()
+function this:callback()
     ---暂停
     if self._pauset then
-        return 
+        return
     end
-    
+
     ---定时
     self:timeout()
-    
+
     ---执行
     local count = 0
     repeat
@@ -210,13 +225,11 @@ end
 
 ---轮询器
 function this:timeout()
-    skynet.timeout(self._interval, function()
-        self:poling()
-    end)
+    skynet.timeout(self._interval, self._callback)
 end
 
 ---设置间隔
----@param interval number @间隔 
+---@param interval number @间隔
 function this:interval(interval)
     self._interval = interval or self._interval
 end
@@ -234,7 +247,7 @@ function this:ifExpire(inow, iend)
     if inow < iend then
         return false
     end
-    
+
     return true
 end
 
@@ -245,53 +258,40 @@ function this:execute()
     local heap = self._heap
     ---@type heapNode   @第一个
     local rede = heap:reder()
-    
+
     if not rede then
         return false
     end
-    
+
     ---@type MS         @时间
     local inow = self:time()
     local iend = rede.ticks
-    
+
     ---到期检查
     if not self:ifExpire(inow, iend) then
         return false
     end
-    
+
     ---@type tagTimer   @定时器
     local item = rede.data
     ---@type count      @多少次
     local count = item.count
-    
+
     if count then
         ---扣除次数
         item.count = count - 1
     end
-    
+
+    ---定时器事件失效
     if 0 == item.count then
-        ---移除事件
-        heap:fetch()
-        ---回收数据
-        reusable:set(item)
-        
-        --删除数据
-        local names = self._names
-        local idens = self._idens
-        local iden = rede.auto
-        local name = idens[iden]
-        
-        if name then
-            names[name] = nil
-            idens[iden] = nil
-        end
+        self:removeByID(rede.auto)
     else
         ---下次触发
         rede.ticks = iend + item.elapse
         ---调整位置
         heap:adjustByFirst(rede)
     end
-    
+
     ---每次只调用一个定时
     local args = item.args
     item.call(args and table.unpack(args) or nil)

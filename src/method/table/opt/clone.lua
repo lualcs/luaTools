@@ -1,4 +1,4 @@
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 local ifTable = require("ifTable")
 ---过滤字段
 ---@type table<string,true>

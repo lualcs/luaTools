@@ -1,4 +1,4 @@
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 local fminmax = require("array.minmax")
 
 local copy1 = {}

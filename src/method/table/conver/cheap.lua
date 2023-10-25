@@ -1,5 +1,5 @@
 local ifTable = require("ifTable")
-local clone = require("table.clone")
+local clone = require("table.opt.clone")
 
 ---代理拷贝
 ---@generic T:any

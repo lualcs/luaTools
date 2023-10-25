@@ -1,4 +1,4 @@
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 
 ---转数组有重复
 ---@param 	map     table<any,count>	@统计表

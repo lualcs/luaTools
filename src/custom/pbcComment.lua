@@ -11,8 +11,13 @@ function this:launch()
     local nte = ".lua"
     local dir = "./game_protobuff/"
     local emm = "./game_protobuff/emmy/"
+
+    ---检查创建emmy目录
+    lfs.mkdir(emm:sub(1, -2))
+
+    ---遍历修改协议文件
     local files = lfs.recursiveFiles(dir, {}, fix)
-    for i, fpatch in ipairs(files) do
+    for _, fpatch in ipairs(files) do
         local file = io.open(fpatch, "r")
         local read = file:read("*a")
         local note = self:parsing(read)
@@ -41,6 +46,8 @@ function this:parsing(read)
     read = read:gsub("    required", "---@field")
     read = read:gsub("    repeated", "---@field []")
     read = read:gsub("    optional", "---@field")
+    read = read:gsub("int8", "number")
+    read = read:gsub("int16", "number")
     read = read:gsub("int32", "number")
     read = read:gsub("int64", "number")
     read = read:gsub("string", "string")

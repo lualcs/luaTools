@@ -1,4 +1,4 @@
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 
 ---浅拷贝
 ---@param t table @要拷贝的表

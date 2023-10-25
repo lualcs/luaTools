@@ -9,38 +9,35 @@ local methods = {}
 ---@return T
 return function(base)
     ---@class source @class类型
-    local source = {}
-    ---对象类型
-    source.__base = base
-    source.__type = 'class'
-    
-    ---虚函数表
+    local source = {
+        __base = base,
+        __type = 'class'
+    }
+
     local virtual = {}
-    
     methods[source] = virtual
-    
+
     if base then
-        setmetatable(virtual, { 
-            __index = methods[base] 
+        setmetatable(virtual, {
+            __index = methods[base]
         })
     end
-    
+
     source.new = function(...)
-        local object = {}
-        object.__base = source
-        object.__type = 'object'
-        setmetatable(object, {
-            __index = virtual
+        local obj = {
+            __base = source,
+            __type = 'object',
+        }
+        setmetatable(obj, { 
+            __index = virtual 
         })
-        peak(object, "ctor", ...)
-        return object
+        peak(obj, "ctor", ...)
+        return obj
     end
-    
-    ---设置构造方法
+
     return setmetatable(source, {
         __newindex = virtual,
         __index = virtual,
     })
+
 end
-
-

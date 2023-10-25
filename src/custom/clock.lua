@@ -24,7 +24,7 @@ end
 ---轮询器
 function this:timeout()
     ---定时回调
-    skynet.timeout(100, self._poling)
+    skynet.timeout(100, self._callback)
 end
 
 ---检测器

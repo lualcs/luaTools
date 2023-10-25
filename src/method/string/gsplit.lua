@@ -1,4 +1,4 @@
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 ---字符串分割
 ---@param s string @字符
 ---@param p string @分割

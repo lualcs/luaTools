@@ -1,7 +1,6 @@
 local load = load or loadstring
 local function localf(sexpr, ...)
-    local f = load("return " .. sexpr:format(...))
-    return f()
+    return load("return " .. sexpr:format(...))
 end
 
 

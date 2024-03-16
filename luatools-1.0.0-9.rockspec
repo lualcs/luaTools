@@ -4,9 +4,9 @@ source = {
    url = "git://github.com/lualcs/luaTools"
 }
 description = {
-   summary = "An extra mocking layer for OpenResty in busted testing environment.",
+   summary = "Commonly used functions in Lua programming language..",
    detailed = [[
-      This module mocks the following OpenResty APIs:
+      This module mocks the following luatools APIs:
 
    ]],
    homepage = "git://github.com/lualcs/luaTools",

@@ -132,6 +132,7 @@ build = {
       ["time.isTogetherDay"] = "src/method/time/isTogetherDay.lua",
       ["time.isTogetherHour"] = "src/method/time/isTogetherHour.lua",
       ["time.isTogetherMinute"] = "src/method/time/isTogetherMinute.lua",
+      ["time.isTogetherWeek"] = "src/method/time/isTogetherWeek.lua",
       ["time.isTogetherMonth"] = "src/method/time/isTogetherMonth.lua",
       ["time.isTogetherYear"] = "src/method/time/isTogetherYear.lua",
       ["time.microsecond"] = "src/method/time/microsecond.lua",

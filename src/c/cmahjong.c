@@ -2,22 +2,25 @@
 #include "lua.h"
 #include "lauxlib.h"
 
-#define PVALUE(v) (v % 16)
-#define PMERGE(c, v) (c * 16 + v)
-#define ASIZE(s) (sizeof(s) / sizeof(s[0]))
+#define PVALUE(v) (v % 16)                  // 计算得出牌值
+#define PMERGE(c, v) (c * 16 + v)           // 合并花色牌之
+#define ASIZE(s) (sizeof(s) / sizeof(s[0])) // 获取数组容量
 
+//数组拷贝
 #define ACOPY(a, b, n)          \
     for (int i = 0; i < n; i++) \
     {                           \
         a[i] = b[i];            \
     }
 
+//数组设置
 #define MSETS(s, v)                     \
     for (int i = 0; i < sizeof(s); i++) \
     {                                   \
         ((int8_t *)(&s))[i] = v;        \
     }
 
+//数组初始
 #define MZERO(s) MSETS(s, 0)
 
 typedef struct ctacits
@@ -61,10 +64,10 @@ typedef struct cpairsls
     cpairs cpairs[4];
 } cpairsls;
 
-//玩家玩法数据
+// 玩家玩法数据
 typedef struct cmahjong
 {
-    int64_t gameId;//游戏标识
+    int64_t gameId; // 游戏标识
     cpokers cpoker;
     claizis laizis;
     claizis jiangs;
@@ -72,7 +75,7 @@ typedef struct cmahjong
     ctacits ctacit;
 } cmahjong;
 
-//添加麻将数据
+// 添加麻将数据
 static void cpokers_push(cpokers *ptr, int8_t v)
 {
     ptr->pokers[ptr->cnt++] = v;
@@ -375,8 +378,8 @@ static int setoutWinnCard(cmahjong *pmahjong, chandle *phandle)
     return 0;
 }
 
-//构造算法
-static int new (lua_State *L)
+// 构造算法
+static int new(lua_State *L)
 {
     int8_t top = lua_gettop(L);
 
@@ -481,7 +484,7 @@ static int new (lua_State *L)
     return lua_gettop(L) - top;
 }
 
-//胡牌判断
+// 胡牌判断
 static int canWinnCard(lua_State *L)
 {
     int8_t top = lua_gettop(L);
@@ -503,7 +506,7 @@ static int canWinnCard(lua_State *L)
     return lua_gettop(L) - top;
 }
 
-//清空癞子
+// 清空癞子
 static int clrSupportLaizis(lua_State *L)
 {
     int8_t top = lua_gettop(L);
@@ -512,7 +515,7 @@ static int clrSupportLaizis(lua_State *L)
     return lua_gettop(L) - top;
 }
 
-//添加癞子
+// 添加癞子
 static int addSupportLaizis(lua_State *L)
 {
     int8_t top = lua_gettop(L);
@@ -522,7 +525,7 @@ static int addSupportLaizis(lua_State *L)
     return lua_gettop(L) - top;
 }
 
-//删除癞子
+// 删除癞子
 static int delSupportLaizis(lua_State *L)
 {
     int8_t top = lua_gettop(L);
@@ -532,7 +535,7 @@ static int delSupportLaizis(lua_State *L)
     return lua_gettop(L) - top;
 }
 
-//清空将牌
+// 清空将牌
 static int clrSupportJiangs(lua_State *L)
 {
     int8_t top = lua_gettop(L);
@@ -541,7 +544,7 @@ static int clrSupportJiangs(lua_State *L)
     return lua_gettop(L) - top;
 }
 
-//增加将牌
+// 增加将牌
 static int addSupportJiangs(lua_State *L)
 {
     int8_t top = lua_gettop(L);
@@ -551,7 +554,7 @@ static int addSupportJiangs(lua_State *L)
     return lua_gettop(L) - top;
 }
 
-//删除将牌
+// 删除将牌(val:number)
 static int delSupportJiangs(lua_State *L)
 {
     int8_t top = lua_gettop(L);

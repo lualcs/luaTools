@@ -68,10 +68,10 @@ typedef struct cpairsls
 typedef struct cmahjong
 {
     int64_t gameId; // 游戏标识
-    cpokers cpoker;
-    claizis laizis;
-    claizis jiangs;
-    cpokers sortls;
+    cpokers cpoker; // 麻将牌库
+    claizis laizis; // 癞子牌库
+    claizis jiangs; // 将牌牌库
+    cpokers sortls; 
     ctacits ctacit;
 } cmahjong;
 

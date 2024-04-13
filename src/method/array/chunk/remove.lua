@@ -17,15 +17,11 @@ return function(t, i1, i2)
     end
 
     --数据移位
-    local num = len - i1 + 1
-    for i = 0, num - 1 do
-        t[i1 + i] = t[i1 + i]
-    end
+    local num = len - i2
+    table.move(t, i2 + 1, len, i1, t)
 
     --清除残留数据
     for i = len, len - num, -1 do
         t[i] = nil
     end
 end
-
-

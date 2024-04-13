@@ -10,5 +10,6 @@ return function(list, map)
     local tab = gather[list] or {
         cache(list, map)
     }
+    gather[list] = tab
     return tab[1],tab[2]
 end

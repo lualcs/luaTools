@@ -6,5 +6,3 @@ return function(t, map)
         table.insert(t, v)
     end
 end
-
-

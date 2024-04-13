@@ -55,5 +55,3 @@ return function(tab)
     tabs[new] = tab
     return setmetatable(new, meta)
 end
-
-

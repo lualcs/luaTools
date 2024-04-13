@@ -5,7 +5,7 @@
 ---@param type any   @分类标记
 return function(mit, tab, s2c, type)
     local chge = mit[tab]
-    
+
     if chge and next(chge) then
         local msge = {
             type = type,
@@ -13,7 +13,7 @@ return function(mit, tab, s2c, type)
             v = {},
         }
         table.insert(s2c, msge)
-        
+
         for k, v in pairs(chge) do
             table.insert(msge.k, k)
             table.insert(msge.v, v)

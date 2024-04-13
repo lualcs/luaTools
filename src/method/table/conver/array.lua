@@ -11,5 +11,3 @@ return function(t, out)
 
     return new
 end
-
-

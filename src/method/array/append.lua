@@ -5,11 +5,16 @@
 ---@param cap count @容量
 ---@return any[]
 return function(arr, val, cnt, cap)
-    for i = 1, cnt do
-        table.insert(arr, val)
-    end
-    while cap and cap > #arr do
-        table.remove(arr, 1)
+    local len = #arr
+    local add = cnt - (cap and len + cnt - cap or 0)
+    if add > 0 then
+        for i = 1, add do
+            table.insert(arr,val)
+        end
+    else
+        for i = 1, cnt do
+            table.insert(arr,val)
+        end
     end
     return arr
 end

@@ -44,16 +44,16 @@ function meta.__pairs(t)
 end
 
 local clone = require("table.opt.clonee")
-return function(tab, fread,fwrite)
+return function(tab, fread, fwrite)
     local new = {}
     tabs[new] = tab
     return setmetatable(new, clone(meta, {
-         __index = function(t, k)
+        __index = function(t, k)
             fread(k)
             return tabs[t][k]
         end,
         __newindex = function(t, k, v)
-            fwrite(k,v)
+            fwrite(k, v)
             tabs[t][k] = v
         end
     }))

@@ -12,10 +12,8 @@ return function(arr, comp, cnt)
         --避免不必要的循环
     end
     
-    local sk 
-    
     for i = 1, cnt do
-        sk = i
+        local sk = i
         
         for j = i + 1, len do
             if comp(arr[j], arr[sk]) then

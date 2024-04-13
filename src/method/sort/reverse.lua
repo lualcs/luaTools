@@ -1,16 +1,16 @@
 ---反序排序
----@param list number[]|boolean[]|string[] @数组
+---@param array any[] @数组
 ---@return any[]
-return function(list)
-    local leng = #list
+return function(array)
+    local leng = #array
     local half = leng // 2
     
     for i = 1, half do
         local j = leng - i + 1
-        list[i], list[j] = list[j], list[i]
+        array[i], array[j] = array[j], array[i]
     end
 	
-    return list
+    return array
 end
 
 

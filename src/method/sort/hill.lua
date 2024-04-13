@@ -12,14 +12,9 @@ return function(arr, comp)
     while gap > 0 do
         for i = gap + 1, len do
             local j = i
-            
-            while comp(arr[j], arr[j - gap]) do
+            while j > gap and comp(arr[j], arr[j - gap]) do
                 swap(arr, j, j - gap)
                 j = j - gap
-                
-                if j <= gap then 
-                    break 
-                end
             end
         end
         

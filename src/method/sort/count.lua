@@ -13,7 +13,6 @@ local copy1 = {}
 ---@param arr number[]     @数组 
 ---@param min number|nil   @最小
 ---@param max number|nil   @最大
----@return number[]
 return function(arr, min, max)
     ---默认值
     if not min and not max then
@@ -43,8 +42,6 @@ return function(arr, min, max)
             end
         end
     end
-    
-    return arr
 end
 
 

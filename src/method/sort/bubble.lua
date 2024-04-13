@@ -9,7 +9,7 @@ return function(arr, comp, cnt)
         cnt = len - 1
     elseif cnt > len then
         cnt = len - 1
-        --避免不必呀的循环
+        --避免不必要的循环
     end
     
     for i = 1, cnt do

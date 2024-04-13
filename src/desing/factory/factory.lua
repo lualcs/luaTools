@@ -5,13 +5,14 @@ local super = require("unknown")
 local this = class(super)
 
 ---构造函数
----@param body          table @switch 数据
+---@param body table @switch 数据
 function this:ctor(body)
     self._body = body
 end
 
 ---工程生产
 ---@param expression any @表达式
+---@return product|nil   @产品
 function this:product(expression)
     return switch(expression, self._body)
 end

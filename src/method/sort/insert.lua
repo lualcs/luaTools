@@ -1,7 +1,7 @@
 ---插入排序
 ---@param arr any[] @数组
 ---@param comp function  @比较函数
----@param val any  @插入值
+---@param new any  @插入值
 return function(arr, comp, new)
     for k, val in ipairs(arr) do
         if comp(new, val) then

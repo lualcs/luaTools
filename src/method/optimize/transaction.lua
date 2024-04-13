@@ -12,5 +12,3 @@ return function(tab, emt)
     caches[tab] = ret
     return ret
 end
-
-

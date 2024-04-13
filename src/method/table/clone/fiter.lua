@@ -16,5 +16,3 @@ return function(t, filter, out)
 
     return new
 end
-
-

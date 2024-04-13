@@ -7,8 +7,6 @@ return function(list)
         local pos = math.random(i, len)
         list[i], list[pos] = list[pos], list[i]
     end
-	
-    return list
 end
 
 

@@ -1,6 +1,5 @@
-
 local caches = require("optimize.cache")
----事务提交
+---事务回滚
 return function()
     for t, _ in pairs(caches) do
         caches[t] = nil

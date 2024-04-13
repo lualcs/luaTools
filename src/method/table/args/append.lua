@@ -3,7 +3,8 @@
 ---@param t any[] @数组
 ---@param ... any[] @变长参数
 return function(t, ...)
-    for i = 1, select("#", ...) do
+    local len = select("#", ...)
+    for i = 1, len do
         local v = select(i, ...)
         table.insert(t, v)
     end

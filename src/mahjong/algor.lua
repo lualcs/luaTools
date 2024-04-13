@@ -1,14 +1,14 @@
 ---@type cmahjong
 local cmahjong = require("cmahjong")
 local class = require("class")
-local super = require("game.algor")
+local super = require("unknown")
 local clone = require("table.opt.clone")
 local clear = require("table.opt.clear")
 local arraymap = require("array.map")
 local mapSnaps = require("mahjong.cfg.mapSnaps")
 local mapNames = require("mahjong.cfg.mapNames")
 
----@class mahjongAlogor:gameAlgor @麻将算法
+---@class mahjongAlogor:unknown @麻将算法
 local this = class(super)
 
 ---构造函数

@@ -1,2 +1,2 @@
-local cmahjong = require("cmahjong")
+local algor = require("mahjong.algor")
 

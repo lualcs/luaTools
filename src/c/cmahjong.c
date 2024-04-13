@@ -61,9 +61,10 @@ typedef struct cpairsls
     cpairs cpairs[4];
 } cpairsls;
 
+//玩家玩法数据
 typedef struct cmahjong
 {
-    int64_t gameId;
+    int64_t gameId;//游戏标识
     cpokers cpoker;
     claizis laizis;
     claizis jiangs;
@@ -71,6 +72,7 @@ typedef struct cmahjong
     ctacits ctacit;
 } cmahjong;
 
+//添加麻将数据
 static void cpokers_push(cpokers *ptr, int8_t v)
 {
     ptr->pokers[ptr->cnt++] = v;

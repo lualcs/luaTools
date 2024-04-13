@@ -30,3 +30,4 @@ local close = os.clock()
 
 print("耗时:", close - start)
 
+logDebug(mapSnaps)

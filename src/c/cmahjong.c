@@ -74,8 +74,8 @@ typedef struct chandle
 
 typedef struct cpairs
 {
-    int8_t count;
-    int8_t place[16]; //
+    int8_t count;     // 可能组合的数量
+    int8_t place[16]; // 可能组合的列表{snapos1,...}
     int8_t cards[10]; // 1~9值-数量 [0]=数量
 } cpairs;
 
@@ -208,36 +208,39 @@ static int chandle_find(chandle *ptr, int8_t v)
 }
 
 // 递归匹配
-// arg1:递归 arg2:this arg3:xxx arg4:癞子数量
-static int matchWinnCard(int8_t sort, cmahjong *pmahjong, cpairs *pairs, int8_t lzp)
+// arg1:this arg2:分类解析信息 arg3:癞子数量
+static int matchWinnCard(cmahjong *pmahjong, cpairs *pairs, int8_t lzp)
 {
-    int8_t ori = lzp; // 癞子数量
-    int8_t cnt = ASIZE(pairs->cards);
-    int8_t lef = 0;
+    int8_t ori = lzp;                 // 癞子数量
+    int8_t cnt = ASIZE(pairs->cards); // 单牌数量
+    int8_t lef = 0;                   // 剩余麻将
     for (int8_t i = 1; i < cnt; i++)
     {
         int8_t cur = pairs->cards[i];
         if (cur < 0)
         {
-            lzp += cur;
+            lzp += cur; // 扣除癞子
         }
         else
         {
-            lef += cur;
+            lef += cur; // 剩余麻将
         }
     }
 
+    // 刚好扣完
     if (0 == lef)
     {
         return 1;
     }
 
-    cnt = ASIZE(pmahjong->ctacit.cards);
+    //循环判断可能组合
     for (int8_t i = 0; i < pairs->count; i++)
     {
+        //获取组合-需要删除牌
         int8_t pos = pairs->place[i];
         int8_t *pDeles = pmahjong->ctacit.cards[pos];
 
+        //扣除组合扑克
         int8_t need = 0;
         for (int8_t j = 0; j < 3; j++)
         {
@@ -250,14 +253,17 @@ static int matchWinnCard(int8_t sort, cmahjong *pmahjong, cpairs *pairs, int8_t 
             }
         }
 
+        //如果癞子不够
         if (need >= lzp)
         {
-            if (matchWinnCard(sort, pmahjong, pairs, ori))
+            //迭代其他可能
+            if (matchWinnCard(pmahjong, pairs, ori))
             {
-                return 1;
+                return 1;//胡牌成功
             }
         }
 
+        //还原扣除扑克
         for (int8_t j = 0; j < 3; j++)
         {
             int8_t value = pDeles[j];
@@ -280,6 +286,9 @@ static int pairsWinnCard(cmahjong *pmahjong, chandle *phandle)
     // 麻将分组
     int8_t map[4][16];
     MZERO(map);
+
+    int8_t bsort[4];
+    MZERO(bsort);
 
     // 遍历手牌(手牌分类)
     for (int8_t i = 0; i < phandle->idx; i++)
@@ -314,34 +323,51 @@ static int pairsWinnCard(cmahjong *pmahjong, chandle *phandle)
             cpairs *pPairs = &cpairsls.cpairs[itype];
             pPairs[itype].cards[value] += cnts;
             pPairs[itype].cards[0] += cnts;
+            // 统计分类是否有
+            bsort[itype] = 1;
         }
 
-        //预估癞子用完-必定胡不了
+        // 预估癞子用完-必定胡不了
         if (lzp < 0)
         {
             return 0;
         }
     }
 
+    // 成朴信息(组合减枝信息统计)
     ctacits *pTacits = &pmahjong->ctacit;
     for (int8_t i = 0; i < 4; i++)
     {
+        // 过滤分类
+        if (!bsort[i])
+        {
+            continue;
+        }
+
+        // 解析数据
         cpairs *pPairs = &cpairsls.cpairs[i];
         int8_t hash[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        // 遍历1~9 牌值
         for (int8_t v = 1; v <= 9; v++)
         {
+            // 是否有此牌
             if (!pPairs->cards[v])
             {
                 continue;
             }
 
+            // 组合数量索引
             int8_t idx = v - 1;
+            // 遍历组合
             for (int8_t c = 0; c < pTacits->count[idx]; c++)
             {
+                // 转数组索引
                 int8_t pos = pTacits->place[idx][c];
 
+                // 组合的牌值
                 int8_t *parr = pTacits->cards[pos];
 
+                // 统计设置set信息
                 int8_t sets[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 for (int8_t j = 0; j < 3; j++)
                 {
@@ -349,8 +375,8 @@ static int pairsWinnCard(cmahjong *pmahjong, chandle *phandle)
                     sets[value]++;
                 }
 
+                // 判断是否满足必要条件(组合类型剪枝)
                 int8_t ok = 1;
-
                 for (int8_t j = 0; j < 3; j++)
                 {
                     int8_t value = parr[j];
@@ -361,6 +387,7 @@ static int pairsWinnCard(cmahjong *pmahjong, chandle *phandle)
                     }
                 }
 
+                // 统计可能满足条件的组合
                 if (ok)
                 {
                     if (!hash[pos])
@@ -373,26 +400,32 @@ static int pairsWinnCard(cmahjong *pmahjong, chandle *phandle)
         }
     }
 
+    // 遍历分类--是否满足胡牌前提
     for (int8_t i = 0; i < ASIZE(cpairsls.cpairs); i++)
     {
+        // 过滤分类
+        if (!bsort[i])
+        {
+            continue;
+        }
 
         cpairs *pPairs = &cpairsls.cpairs[i];
         if (pPairs->cards[0] > 0)
         {
             if (pPairs->count <= 0)
             {
-                return 0;
+                return 0; // 胡牌失败
             }
             else
             {
-                if (!matchWinnCard(i + 1, pmahjong, pPairs, lzp))
+                if (!matchWinnCard(pmahjong, pPairs, lzp))
                 {
-                    return 0;
+                    return 0; // 胡牌失败
                 }
             }
         }
     }
-    return 1;
+    return 1; // 可以胡牌
 }
 
 // 判断是否胡牌

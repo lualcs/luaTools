@@ -64,6 +64,6 @@ for i, list in ipairs(data) do
 end
 
 return {
-    arr = arr,
-    pos = pos,
+    arr = arr, ---组合牌值
+    pos = pos, ---组合索引
 }

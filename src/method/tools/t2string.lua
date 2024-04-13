@@ -29,11 +29,21 @@ local function _t2sList(list, val, level, key)
     end
 
     if ifString(key) then
-        table.insert(list, "\r\n")
-        table.insert(list, indent)
-        table.insert(list, key)
-        table.insert(list, " = ")
-        table.insert(list, "{")
+        if ifSymbol(key) then
+            table.insert(list, "\r\n")
+            table.insert(list, indent)
+            table.insert(list, key)
+            table.insert(list, " = ")
+            table.insert(list, "{")
+        else
+            table.insert(list, "\r\n")
+            table.insert(list, indent)
+            table.insert(list, "[\"")
+            table.insert(list, tostring(key))
+            table.insert(list, "\"]")
+            table.insert(list, " = ")
+            table.insert(list, "{")
+        end
     elseif ifNumber(key) then
         table.insert(list, "\r\n")
         table.insert(list, indent)
@@ -146,5 +156,3 @@ return function(v, b, e)
     table.insert(list, e)
     return table.concat(list)
 end
-
-

@@ -20,6 +20,7 @@ local sz567 = { [5] = 1, [6] = 1, [7] = 1 }
 local sz678 = { [6] = 1, [7] = 1, [8] = 1 }
 local sz789 = { [7] = 1, [8] = 1, [9] = 1 }
 
+---成扑信息(牌值-参与的刻子或者顺子)
 ---@type table<number,number>[][]
 local data = {
     [1] = { sz123, kz111 },
@@ -33,7 +34,7 @@ local data = {
     [9] = { sz789, kz999 },
 }
 
-
+---@type number[][]
 local pos = {
     [1] = {},
     [2] = {},
@@ -45,7 +46,12 @@ local pos = {
     [8] = {},
     [9] = {},
 }
+
+---数值可以参与的类型
+---@type table<number,number>[]
 local arr = {}
+---数组映射对于类型
+---@type table<number,number>
 local map = {}
 for i, list in ipairs(data) do
     for j, v in ipairs(list) do

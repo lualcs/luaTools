@@ -30,10 +30,11 @@ typedef struct ctacits
     int8_t place[9][4];
 } ctacits;
 
+//牌库不重复
 typedef struct cpokers
 {
     int8_t cnt;
-    int8_t pokers[0x49];
+    int8_t pokers[0x49];//麻将库
 } cpokers;
 
 typedef struct claizis
@@ -43,6 +44,7 @@ typedef struct claizis
     int8_t laizis[0x49];
 } claizis;
 
+//手牌结构
 typedef struct chandle
 {
     int8_t idx;
@@ -75,18 +77,20 @@ typedef struct cmahjong
     ctacits ctacit;
 } cmahjong;
 
-// 添加麻将数据
+//添加牌库(不重复)
 static void cpokers_push(cpokers *ptr, int8_t v)
 {
     ptr->pokers[ptr->cnt++] = v;
 }
 
+//添加牌库(全部牌)
 static void cpokers_save(cpokers *ptr, int8_t v, int8_t i)
 {
     ptr->cnt++;
     ptr->pokers[v] = i;
 }
 
+//添加癞子(不重复)
 static void claizis_push(claizis *ptr, int8_t v)
 {
     if (!ptr->pokers[v])
@@ -97,6 +101,7 @@ static void claizis_push(claizis *ptr, int8_t v)
     }
 }
 
+//删除癞子
 static void claizis_dele(claizis *ptr, int8_t v)
 {
     int8_t pos = ptr->pokers[v];
@@ -110,11 +115,13 @@ static void claizis_dele(claizis *ptr, int8_t v)
     }
 }
 
+//是否癞子
 static int claizis_find(claizis *ptr, int8_t v)
 {
     return ptr->pokers[v];
 }
 
+//添加手牌
 static void chandle_push(cmahjong *pmahjong, chandle *ptr, int8_t v, int8_t c)
 {
     if (!c)
@@ -122,6 +129,7 @@ static void chandle_push(cmahjong *pmahjong, chandle *ptr, int8_t v, int8_t c)
         return;
     }
 
+    //统计癞子牌
     if (claizis_find(&pmahjong->laizis, v))
     {
         ptr->lzp += c;
@@ -139,9 +147,11 @@ static void chandle_push(cmahjong *pmahjong, chandle *ptr, int8_t v, int8_t c)
             ptr->pokers[v]++;
         }
     }
+    //
     ptr->cnt += c;
 }
 
+//删除手牌
 static void chandle_dele(cmahjong *pmahjong, chandle *ptr, int8_t v, int8_t c)
 {
     if (!c)
@@ -378,7 +388,7 @@ static int setoutWinnCard(cmahjong *pmahjong, chandle *phandle)
     return 0;
 }
 
-// 构造算法
+// 构造算法 arg1所有牌库 arg2癞子牌库 arg3将对牌库
 static int new(lua_State *L)
 {
     int8_t top = lua_gettop(L);
@@ -389,6 +399,7 @@ static int new(lua_State *L)
     luaL_getmetatable(L, "mahjong");
     lua_setmetatable(L, -2);
 
+    //添加牌库
     cpokers *pcpoker = &pmahjong->cpoker;
     lua_pushnil(L);
     while (lua_next(L, 1))
@@ -397,6 +408,7 @@ static int new(lua_State *L)
         lua_pop(L, 1);
     }
 
+    //添加癞子
     claizis *laizis = &pmahjong->laizis;
     lua_pushnil(L);
     while (lua_next(L, 2))
@@ -404,7 +416,8 @@ static int new(lua_State *L)
         claizis_push(laizis, lua_tointeger(L, -2));
         lua_pop(L, 1);
     }
-
+    
+    //添加将牌
     claizis *jiangs = &pmahjong->jiangs;
     lua_pushnil(L);
     while (lua_next(L, 3))

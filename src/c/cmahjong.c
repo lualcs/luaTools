@@ -55,6 +55,7 @@ typedef struct cpokers
     int8_t pokers[0x49]; // 麻将库(不重复)
 } cpokers;
 
+// 癞子牌库
 typedef struct claizis
 {
     int8_t cnt;          // 癞子数量
@@ -233,14 +234,14 @@ static int matchWinnCard(cmahjong *pmahjong, cpairs *pairs, int8_t lzp)
         return 1;
     }
 
-    //循环判断可能组合
+    // 循环判断可能组合
     for (int8_t i = 0; i < pairs->count; i++)
     {
-        //获取组合-需要删除牌
+        // 获取组合-需要删除牌
         int8_t pos = pairs->place[i];
         int8_t *pDeles = pmahjong->ctacit.cards[pos];
 
-        //扣除组合扑克
+        // 扣除组合扑克
         int8_t need = 0;
         for (int8_t j = 0; j < 3; j++)
         {
@@ -253,17 +254,17 @@ static int matchWinnCard(cmahjong *pmahjong, cpairs *pairs, int8_t lzp)
             }
         }
 
-        //如果癞子不够
+        // 如果癞子不够
         if (need >= lzp)
         {
-            //迭代其他可能
+            // 迭代其他可能
             if (matchWinnCard(pmahjong, pairs, ori))
             {
-                return 1;//胡牌成功
+                return 1; // 胡牌成功
             }
         }
 
-        //还原扣除扑克
+        // 还原扣除扑克
         for (int8_t j = 0; j < 3; j++)
         {
             int8_t value = pDeles[j];
@@ -619,6 +620,159 @@ static int canWinnCard(lua_State *L)
 // 听牌判断
 static int tinWinnCard(lua_State *L)
 {
+    int8_t top = lua_gettop(L);
+    cmahjong *pmahjong = lua_touserdata(L, 1);
+    // 手牌处理
+    chandle handles;
+    MZERO(handles);
+
+    // 添加手牌信息
+    int8_t cnt = 0;
+    lua_pushnil(L);
+    while (lua_next(L, 2))
+    {
+        int8_t card = lua_tointeger(L, -2); // 牌值
+        int8_t cnts = lua_tointeger(L, -1); // 数量
+        chandle_push(pmahjong, &handles, card, cnts);
+        lua_pop(L, 1);
+        cnt += cnts;
+    }
+
+    // 判断手牌数量
+    if (1 != (cnt % 3))
+    {
+        // 相公了
+        lua_pushboolean(L, 0);
+    }
+    else
+    {
+        cpokers tin;
+        MZERO(tin);
+
+        // 遍历牌库
+        for (int8_t i = 0; i < pmahjong->cpoker.cnt; i++)
+        {
+            // 增加手牌
+            int8_t card = pmahjong->cpoker.pokers[i];
+            chandle_push(pmahjong, &handles, card, 1);
+            if (setoutWinnCard(pmahjong, &handles))
+            {
+                cpokers_push(&tin, card);
+            }
+            // 还原手牌
+            chandle_dele(pmahjong, &handles, card, 1);
+        }
+        // 没有数据
+        if (!tin.cnt)
+        {
+            lua_pushboolean(L, 0);
+        }
+        else
+        {
+            if (!lua_istable(L, 3))
+            {
+                // 没有传入out表
+                lua_newtable(L);
+            }
+            else
+            {
+                // 将table压入栈顶
+                lua_pushvalue(L, 3);
+            }
+
+            // 将数组元素压入Lua表
+            for (int i = 0; i < tin.cnt; i++)
+            {
+                lua_pushinteger(L, tin.pokers[i]);
+                lua_rawseti(L, -2, i + 1);
+            }
+        }
+    }
+    return lua_gettop(L) - top;
+}
+
+// 选牌判断
+static int xuaWinnCard(lua_State *L)
+{
+    int8_t top = lua_gettop(L);
+    cmahjong *pmahjong = lua_touserdata(L, 1);
+    // 手牌处理
+    chandle handles;
+    MZERO(handles);
+
+    // 添加手牌信息
+    int8_t cnt = 0;
+    lua_pushnil(L);
+    while (lua_next(L, 2))
+    {
+        int8_t card = lua_tointeger(L, -2); // 牌值
+        int8_t cnts = lua_tointeger(L, -1); // 数量
+        chandle_push(pmahjong, &handles, card, cnts);
+        lua_pop(L, 1);
+        cnt += cnts;
+    }
+
+    // 判断手牌数量
+    if (2 != (cnt % 3))
+    {
+        // 相公了
+        lua_pushboolean(L, 0);
+    }
+    else
+    {
+
+        if (!lua_istable(L, 3))
+        {
+            // 没有传入out表
+            lua_newtable(L);
+        }
+        else
+        {
+            // 将table压入栈顶
+            lua_pushvalue(L, 3);
+        }
+
+        // 遍历手牌
+        for (int8_t i = 0; i < handles.idx; i++)
+        {
+            int8_t xcard = handles.handle[i];           // 选那张牌
+            chandle_dele(pmahjong, &handles, xcard, 1); // 删除选牌
+
+            // 听牌记录
+            cpokers tin;
+            MZERO(tin);
+
+            // 遍历牌库
+            for (int8_t j = 0; j < pmahjong->cpoker.cnt; j++)
+            {
+                // 添加听牌
+                int8_t card = pmahjong->cpoker.pokers[j];
+                chandle_push(pmahjong, &handles, card, 1);
+                if (setoutWinnCard(pmahjong, &handles))
+                {
+                    cpokers_push(&tin, card);
+                }
+                // 删除听牌
+                chandle_dele(pmahjong, &handles, card, 1);
+            }
+            chandle_push(pmahjong, &handles, xcard, 1); // 还原选牌
+
+            // 压入听牌数据
+            if (tin.cnt)
+            {
+                lua_newtable(L);
+                // 将数组元素压入Lua表
+                for (int j = 0; j < tin.cnt; j++)
+                {
+                    lua_pushboolean(L, 1);
+                    lua_rawseti(L, -2, tin.pokers[j]);
+                }
+                // 将听数据压入选牌表
+                lua_rawseti(L, -2, xcard);
+            }
+        }
+    }
+    return lua_gettop(L) - top;
 }
 
 // 清空癞子
@@ -688,6 +842,7 @@ int luaopen_cmahjong(lua_State *L)
         {"new", new},
         {"canWinnCard", canWinnCard},
         {"tinWinnCard", tinWinnCard},
+        {"xuaWinnCard", xuaWinnCard},
         {"clrSupportLaizis", clrSupportLaizis},
         {"addSupportLaizis", addSupportLaizis},
         {"delSupportLaizis", delSupportLaizis},

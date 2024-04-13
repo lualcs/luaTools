@@ -17,17 +17,22 @@ local mahjong = cmahjong.new(mapNames, {}, {}, {
     { color = 2, start = 1, close = 9 },
 }, mapSnaps, 1)
 
-local hand_tiles = array2map { 0x01, 0x01, 0x02, 0x02, 0x03, 0x03, 0x04, 0x04, 0x05, 0x05, 0x06, 0x06,0x01, 0x01, 0x02, 0x02, 0x03, 0x03, 0x04, 0x04, 0x05, 0x05, 0x06, 0x06, 0x07, 0x07 }
+local handle = { 0x08, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x02 }
+
+local hand_tiles = array2map(handle)
 
 local start = os.clock()
 
-for i = 1, 1 do
-    mahjong:canWinnCard(hand_tiles)
+print("手牌数量:", #handle)
+local out = {}
+-- logDebug(mahjong:tinWinnCard(hand_tiles, clear(out)))
+
+for i = 1, 10000 do
+    mahjong:xuaWinnCard(hand_tiles)
 end
+
 
 
 local close = os.clock()
 
 print("耗时:", close - start)
-
-logDebug(mapSnaps)

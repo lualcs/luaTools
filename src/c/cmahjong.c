@@ -3,6 +3,7 @@
 #include "lauxlib.h"
 
 #define PVALUE(v) (v % 16)                  // 计算得出牌值
+#define PCOLOR(v) (v / 16)                  // 计算得出花色
 #define PMERGE(c, v) (c * 16 + v)           // 合并花色牌之
 #define ASIZE(s) (sizeof(s) / sizeof(s[0])) // 获取数组容量
 
@@ -71,6 +72,7 @@ typedef struct chandle
     int8_t lzp;          // 癞子牌数量
     int8_t pokers[0x49]; // 所有牌映射[牌]=数量
     int8_t handle[0x11]; // 手牌数据(不重复)
+    int8_t colors[0x05]; // 拥有花色(数量统计)
 } chandle;
 
 typedef struct cpairs
@@ -163,10 +165,8 @@ static void chandle_push(cmahjong *pmahjong, chandle *ptr, int8_t v, int8_t c)
             ptr->handle[ptr->idx++] = v;
         }
         // 统计手牌数量
-        for (int8_t i = 0; i < c; i++)
-        {
-            ptr->pokers[v]++;
-        }
+        ptr->pokers[v] += c;
+        ptr->colors[PCOLOR(v)] += c;
     }
     //
     ptr->cnt += c;
@@ -189,7 +189,7 @@ static void chandle_dele(cmahjong *pmahjong, chandle *ptr, int8_t v, int8_t c)
     {
         ptr->cnt -= c;       // 减少手牌数量
         ptr->pokers[v] -= c; // 减少手牌统计
-
+        ptr->colors[PCOLOR(v)] -= c;
         // 如果这个麻将没有了-就移除
         if (!ptr->pokers[v])
         {
@@ -280,6 +280,26 @@ static int pairsWinnCard(cmahjong *pmahjong, chandle *phandle)
 {
     // 癞子牌
     int8_t lzp = phandle->lzp;
+    // 手牌花色减枝
+    int8_t jzp = 0;
+    int8_t cor = 0;
+    int8_t cot = 0;
+    for (int8_t i = 0; i < ASIZE(phandle->colors); i++)
+    {
+        cor = phandle->colors[i];
+        cot = cor % 3;
+        if (0 != cot)
+        {
+            jzp += (3 - cot);
+        }
+    }
+
+    // 胡不了
+    if (jzp > lzp)
+    {
+        return 0;
+    }
+
     // 解析数组
     cpairsls cpairsls;
     MZERO(cpairsls);
@@ -439,7 +459,7 @@ static int setoutWinnCard(cmahjong *pmahjong, chandle *phandle)
     for (int8_t i = 0; i < uniq; i++)
     {
         int8_t card = outs[i];
-
+        // 如果有指定将牌
         if (pmahjong->jiangs.cnt && !pmahjong->jiangs.pokers[card])
         {
             continue;
@@ -613,7 +633,7 @@ static int canWinnCard(lua_State *L)
     }
 
     // 返回判断清空
-    lua_pushboolean(L, setoutWinnCard(pmahjong, &handles));
+    lua_pushboolean(L,setoutWinnCard(pmahjong, &handles));
     return lua_gettop(L) - top;
 }
 
@@ -654,6 +674,11 @@ static int tinWinnCard(lua_State *L)
         {
             // 增加手牌
             int8_t card = pmahjong->cpoker.pokers[i];
+            // 没有癞子-过滤牌库
+            if (!handles.lzp && !handles.colors[PCOLOR(card)])
+            {
+                continue;
+            }
             chandle_push(pmahjong, &handles, card, 1);
             if (setoutWinnCard(pmahjong, &handles))
             {
@@ -745,8 +770,16 @@ static int xuaWinnCard(lua_State *L)
             // 遍历牌库
             for (int8_t j = 0; j < pmahjong->cpoker.cnt; j++)
             {
-                // 添加听牌
+                // 牌库取出牌
                 int8_t card = pmahjong->cpoker.pokers[j];
+                // 没有癞子-过滤牌库
+                if (!handles.lzp && !handles.colors[PCOLOR(card)])
+                {
+                    continue;
+                }
+
+                // 添加听牌
+
                 chandle_push(pmahjong, &handles, card, 1);
                 if (setoutWinnCard(pmahjong, &handles))
                 {

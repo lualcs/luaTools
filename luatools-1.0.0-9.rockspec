@@ -62,6 +62,7 @@ build = {
       tigger = "src/custom/tigger.lua",
       ranking = "src/custom/ranking.lua",
       reusable = "src/custom/reusable.lua",
+      maskword = "src/custom/maskword.lua",
       ["array.append"] = "src/method/array/append.lua",
       ["array.call"] = "src/method/array/call.lua",
       ["array.map"] = "src/method/array/map.lua",

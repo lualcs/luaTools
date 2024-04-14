@@ -31,8 +31,8 @@ local words = {}
 ---插入函数
 function this:insert(...)
     clear(words)
-    for i = 1, select("#", ...) do
-        words[i] = select(i, ...)
+    for i, v in ipairs(...) do
+        words[i] = v
     end
 end
 

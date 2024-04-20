@@ -65,6 +65,7 @@
         "idesc",
         "cname",
         "ssrots",
-        "jdesc"
+        "jdesc",
+        "fxstruct"
     ]
 }

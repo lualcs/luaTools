@@ -190,7 +190,10 @@ function this:excelMd5(fpatch)
     local list = gsplit(fpatch, "/")
     local fname = list[#list]:sub(1, -6)
     if md5cache[fname] == md5 then
-        return
+        ---结构每次都生成
+        if self.fstruct == fname then
+            return
+        end
     end
 
     ---文件解析

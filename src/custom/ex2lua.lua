@@ -359,6 +359,13 @@ function this:structPars(data, name)
         table.insert(semmys, "\n")
     end
 
+    ---添加读取出来的数据
+    for k, v in pairs(self.struct or {}) do
+        if not rawget(struct, k) then
+            struct[k] = v
+        end
+    end
+
     self.semmys = semmys
     self.struct = struct
     self.metable = ssrots

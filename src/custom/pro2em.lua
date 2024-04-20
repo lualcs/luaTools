@@ -3,14 +3,21 @@ local class = require("class")
 local gsplit = require("string.gsplit")
 
 local this = class()
+
+---@class p2emmyluaParam @参数
+---@field proDir string @协议路径
+---@field emmDir string @注解路径
+---@field luaFix string @lua后缀--某些情况不是lua
+---@field proFix string @协议后缀--某些情况不是.proto
+
 ---启动函数
-function this:launch()
-    local fix = ".proto"
-    local nte = ".lua"
-    local dir = "./proto/"
-    --local dir = "C:/code/Server/support/Protobuf/proto/"
-    local emm = "./design/emmy/"
-    --local emm = "C:/code/Server/mmlua/"
+---@param param p2emmyluaParam
+function this:launch(param)
+    local fix = param.proFix or ".proto"
+    local nte = param.luaFix or ".lua"
+    local dir = param.proDir or "./proto/"
+    local emm = param.emmDir
+    assert(emm, "not emmDir")
 
     ---检查创建emmy目录
     lfs.mkdir(emm:sub(1, -2))
@@ -104,7 +111,7 @@ function this:parsing(fpatch)
     local i = 1
     while i <= lenght do
         local row = lines[i]
-        -- if i == 2122 then 
+        -- if i == 2122 then
         --     print("error",row,lines[i-1],lines[i-2])
         -- end
         ---结构解析

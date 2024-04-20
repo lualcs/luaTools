@@ -41,6 +41,12 @@
         "infos",
         "classs",
         "mclass",
-        "cutworks"
+        "cutworks",
+        "struct",
+        "fsort",
+        "mkdir",
+        "gsplit",
+        "baseconver",
+        "arrayplit"
     ]
 }

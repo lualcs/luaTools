@@ -36,7 +36,7 @@ local this = class()
 ---@field wffix string @lua 文件后缀
 ---@field fsort table<string,number> @文件序号
 ---@field fstruct string @结构文件名称
----@field fglobal string @全局文件名称
+---@field fglobal table<string,boolean> @全局文件名称
 
 ---构造函数
 ---@param param ex2luaParam
@@ -59,12 +59,12 @@ function this:ctor(param)
     self.fsort = param.fsort
     ---缓存
     self.md5cache = {}
-    ---注解 
+    ---注解
     self.semmys = {}
-    ---结构 
+    ---结构
     self.fstruct = param.fstruct or "lua_struct"
     ---全局
-    self.fglobal = param.fstruct or "cfg_global"
+    self.fglobal = param.fstruct or { cfg_global = true }
 end
 
 ---加载MD5判断excel 是否变化
@@ -124,7 +124,6 @@ function this:genericMD5(fpath)
     local s = self:readf(fpath)
     return md5.lower(s)
 end
-
 
 ---启动函数
 function this:launch()

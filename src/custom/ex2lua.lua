@@ -64,7 +64,7 @@ function this:ctor(param)
     ---结构
     self.fstruct = param.fstruct or "lua_struct"
     ---全局
-    self.fglobal = param.fstruct or { cfg_global = true }
+    self.fglobal = param.fglobal or { cfg_global = true }
 end
 
 ---加载MD5判断excel 是否变化

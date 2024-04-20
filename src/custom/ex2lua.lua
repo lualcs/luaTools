@@ -3,7 +3,7 @@ local md5 = require("api_md5")
 local gsplit = require("string.gsplit")
 local t2string = require("t2string")
 local excel = require("api_excel")
-local clear = require("table.clear")
+local clear = require("table.opt.clear")
 local default = require("table.default.table")
 local logDebug = require("logDebug")
 local class = require("class")
@@ -25,22 +25,36 @@ local arrayplit = {
 ---@class excel2luaconfig @excel转lua配置表
 local this = class()
 
-function this:ctor()
+---@class ex2luaParam @ex2lua参数
+---@field readDir string @excel目录
+---@field writeDir string @lua写入目录
+---@field md5fpath string @md5Cache路径
+---@field structfpath string @lua_struct路径
+---@field metablefpath string @lua_metable路径
+---@field dirExcelfpath string @dir_excel路径
+---@field rffix string @excel 文件后缀
+---@field wffix string @lua 文件后缀
+---@field fsort table<string,number> @文件序号
+
+---构造函数
+---@param param ex2luaParam
+function this:ctor(param)
     ---目录
-    self.readDir = "./design/Excel/"
-    ---self.readDir = "C:/code/StoneAgeSupport/Excel/DesignerConfigs/Datas/Active/"
-    self.writeDir = "./design/luacfg/"
+    self.readDir = param.readDir             --"./design/Excel/"
+    self.writeDir = param.writeDir           --"./design/luacfg/"
     ---后缀
-    self.rffix = ".xlsx"
-    self.wffix = ".lua"
+    self.rffix = param.rffix                 -- ".xlsx"
+    self.wffix = param.wffix                 --".lua"
     ---变更
-    self.md5fpath = "./design/cache/md5Cache.lua"
+    self.md5fpath = param.md5fpath           --"./design/cache/md5Cache.lua"
     ---结构
-    self.structfpath = "./design/cache/lua_struct.lua"
+    self.structfpath = param.structfpath     --"./design/cache/lua_struct.lua"
     ---索引
-    self.metablefpath = "./design/cache/lua_metable.lua"
+    self.metablefpath = param.metablefpath   --"./design/cache/lua_metable.lua"
     ---目录
-    self.dirExcelfpath = "./design/cache/dir_excel.lua"
+    self.dirExcelfpath = param.dirExcelfpath --"./design/cache/dir_excel.lua"
+    ---排序
+    self.fsort = param.fsort
     ---缓存
     self.md5cache = {}
 end
@@ -103,10 +117,6 @@ function this:genericMD5(fpath)
     return md5.lower(s)
 end
 
----@type table<string,number>
-local fsort = {
-    ["./design/Excel/struct.xlsx"] = -1 --需要最先解析这个
-}
 
 ---启动函数
 function this:launch()
@@ -126,8 +136,8 @@ function this:launch()
     ---遍历配置表格文件
     local files = lfs.recursiveFiles(self.readDir, {}, self.rffix)
     table.sort(files, function(a, b)
-        a = fsort[a] or 0
-        b = fsort[b] or 0
+        a = self.fsort[a] or 0
+        b = self.fsort[b] or 0
         return a < b
     end)
     for _, fpatch in ipairs(files) do

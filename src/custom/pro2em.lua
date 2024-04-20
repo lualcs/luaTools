@@ -8,15 +8,21 @@ local this = class()
 ---@field proDir string @协议路径
 ---@field emmDir string @注解路径
 ---@field luaFix string @lua后缀--某些情况不是lua
----@field proFix string @协议后缀--某些情况不是.proto
+---@field proFix string @协议后缀--某些情况不是.proto  
+
+---构造函数 
+---@param p2emmyluaParam param
+function this:ctor(param)
+    self.param = param
+end
 
 ---启动函数
 ---@param param p2emmyluaParam
-function this:launch(param)
-    local fix = param.proFix or ".proto"
-    local nte = param.luaFix or ".lua"
-    local dir = param.proDir or "./proto/"
-    local emm = param.emmDir
+function this:launch()
+    local fix = self.param.proFix or ".proto"
+    local nte = self.param.luaFix or ".lua"
+    local dir = self.param.proDir or "./proto/"
+    local emm = self.param.emmDir
     assert(emm, "not emmDir")
 
     ---检查创建emmy目录

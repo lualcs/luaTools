@@ -35,6 +35,8 @@ local this = class()
 ---@field rffix string @excel 文件后缀
 ---@field wffix string @lua 文件后缀
 ---@field fsort table<string,number> @文件序号
+---@field fstruct string @结构文件名称
+---@field fglobal string @全局文件名称
 
 ---构造函数
 ---@param param ex2luaParam
@@ -57,6 +59,12 @@ function this:ctor(param)
     self.fsort = param.fsort
     ---缓存
     self.md5cache = {}
+    ---注解 
+    self.semmys = {}
+    ---结构 
+    self.fstruct = param.fstruct or "lua_struct"
+    ---全局
+    self.fglobal = param.fstruct or "cfg_global"
 end
 
 ---加载MD5判断excel 是否变化
@@ -147,7 +155,7 @@ function this:launch()
     self:writef(self.md5fpath, self.md5cache, "---@type table<string,string>")
 
     ---构建 struct head
-    local semmys = self.semmys or {}
+    local semmys = self.semmys
     table.insert(semmys, "---@class struct @结构信息\n")
     table.insert(semmys, "---@field name string @字段名称\n")
     table.insert(semmys, "---@field type string @字段类型\n")
@@ -216,9 +224,9 @@ end
 ---工作簿解析
 ---@param name string @工作簿名称
 function this:sheetPars(name)
-    if name == "lua_struct" then
+    if name == self.fstruct then
         self:excelForRead(self.structPars, name)
-    elseif name == "cfg_global" then
+    elseif self.fglobal[name] then
         self:excelForRead(self.gobalsPars, name)
     else
         self:excelForRead(self.configPars, name)
@@ -309,7 +317,7 @@ function this:structPars(data, name)
     ---@type table<string,string>
     local struct = default({})
     local ssrots = default({})
-    local semmys = {}
+    local semmys = self.semmys
     for i, row in ipairs(data) do
         local cname = row[1]
 
@@ -354,7 +362,7 @@ end
 
 ---全局配置解析
 ---@param data string[][]
----@param name any
+---@param name string @sheets名称
 function this:gobalsPars(data, name)
     ---全局配置
     local cfg = {}
@@ -390,7 +398,9 @@ function this:gobalsPars(data, name)
     self:writeLuaCfg(name, cfg, table.concat(emmy))
 end
 
----解析其他配置
+---解析常规配置
+---@param data string[][]
+---@param name string @sheets名称
 function this:configPars(data, name)
     ---读取结构配置
     local struct = self.struct

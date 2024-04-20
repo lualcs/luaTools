@@ -36,6 +36,7 @@ local this = class()
 ---@field wffix string @lua 文件后缀
 ---@field fsort table<string,number> @文件序号
 ---@field fstruct string @结构文件名称
+---@field fxstruct string @结构文件名称excel
 ---@field fglobal table<string,boolean> @全局文件名称
 
 ---构造函数
@@ -63,6 +64,7 @@ function this:ctor(param)
     self.semmys = {}
     ---结构
     self.fstruct = param.fstruct or "lua_struct"
+    self.fxstruct = param.fxstruct or "struct"
     ---全局
     self.fglobal = param.fglobal or { cfg_global = true }
 end
@@ -191,7 +193,7 @@ function this:excelMd5(fpatch)
     local fname = list[#list]:sub(1, -6)
     if md5cache[fname] == md5 then
         ---结构每次都生成
-        if self.fstruct ~= fname then
+        if self.fxstruct ~= fname then
             return
         end
     end

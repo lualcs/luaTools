@@ -191,7 +191,7 @@ function this:excelMd5(fpatch)
     local fname = list[#list]:sub(1, -6)
     if md5cache[fname] == md5 then
         ---结构每次都生成
-        if self.fstruct == fname then
+        if self.fstruct ~= fname then
             return
         end
     end

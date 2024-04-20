@@ -147,28 +147,5 @@ build = {
       ["time.millisecond"] = "src/method/time/millisecond.lua",
       ["table.opt.source"] = "src/method/table/opt/source.lua",
       toguess = "src/method/tools/toguess.lua",
-      ["mahjong.algor"] = "src/mahjong/algor.lua",
-      ["mahjong.helper"] = "src/mahjong/helper.lua",
-      ["mahjong.cfg.mapColors"] = "src/mahjong/cfg/mapColors.lua",
-      ["mahjong.cfg.mapHuCards"] = "src/mahjong/cfg/mapHuCards.lua",
-      ["mahjong.cfg.mapNames"] = "src/mahjong/cfg/mapNames.lua",
-      ["mahjong.cfg.mapSnaps"] = "src/mahjong/cfg/mapSnaps.lua",
-      ["mahjong.cfg.mapStraight"] = "src/mahjong/cfg/mapStraight.lua",
-      ["mahjong.cfg.mapViews"] = "src/mahjong/cfg/mapViews.lua",
-      cmahjong = {
-         sources = { "./src/c/cmahjong.c"},
-         defines = {
-         }
-      },
-      cutworks = {
-         sources = { "./src/c/cutworks.c"},
-         defines = {
-         }
-      },
-      usertime = {
-         sources = { "./src/c/usertime.c"},
-         defines = {
-         }
-      },
    }
 }

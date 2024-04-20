@@ -47,6 +47,24 @@
         "mkdir",
         "gsplit",
         "baseconver",
-        "arrayplit"
+        "arrayplit",
+        "semmys",
+        "rffix",
+        "wffix",
+        "fpath",
+        "structfpath",
+        "metablefpath",
+        "Excelfpath",
+        "writef",
+        "metable",
+        "fpatch",
+        "fname",
+        "fstruct",
+        "fglobal",
+        "gobals",
+        "idesc",
+        "cname",
+        "ssrots",
+        "jdesc"
     ]
 }

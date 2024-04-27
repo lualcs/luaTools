@@ -66,6 +66,9 @@
         "cname",
         "ssrots",
         "jdesc",
-        "fxstruct"
+        "fxstruct",
+        "chgs",
+        "msge",
+        "chge"
     ]
 }

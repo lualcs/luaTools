@@ -69,6 +69,7 @@
         "fxstruct",
         "chgs",
         "msge",
-        "chge"
+        "chge",
+        "tmap"
     ]
 }

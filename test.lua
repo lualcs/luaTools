@@ -15,9 +15,9 @@ local ori = {
 local tran = transaction(ori, 0)
 
 
-tran.lv = 101
-tran.exp = 10
-tran.gold = 11000
+tran.lv = 0
+tran.exp = 1
+tran.gold = 0
 
 local cmt = commit()
 

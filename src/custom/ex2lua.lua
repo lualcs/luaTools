@@ -538,8 +538,10 @@ function this:rowPars(cfgClass, info)
     ---默认只有1个字段为set or map 类型
     local len = #cfgClass
     if len <= 2 then
-        for k, v in pairs(data) do
-            data[k] = v[2] or true
+        local kField = cfgClass[1].name
+        if "nil" == kField then
+            local vField = cfgClass[2].name
+            return data[vField] or true
         end
     end
     return data

@@ -486,7 +486,27 @@ function this:configPars(data, name)
 
 
     ---有可能没有内容
-    if next(cfgClass) then
+    local aInfo = cfgClass[1]
+    if aInfo and aInfo.name = "nil" then 
+         ---生成emmylua注解
+         local emmy = {
+        }
+
+        local bInfo = cfgClass[1]
+        table.insert(emmy, "---@type ")
+        table.insert(emmy, "table<")
+        table.insert(emmy, aInfo.type)
+        table.insert(emmy, ",")
+        if bInfo then
+            table.insert(emmy, bInfo.type)
+        else
+            table.insert(emmy, "boolean")
+        end
+        table.insert(emmy, ">")
+        ---保存解析文件
+        self:writeLuaCfg(name, cfg, table.concat(emmy))
+
+    elseif next(cfgClass) then
         ---生成emmylua注解
         local emmy = {
             "---@class ",

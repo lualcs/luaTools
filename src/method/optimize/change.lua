@@ -1,14 +1,14 @@
----修改结构
----@param mit  table @修改数据
----@param tab  table @原表数据
----@param s2c  table @保存数据
----@param type any   @分类标记
-return function(mit, tab, s2c, type)
+---统计修改字段数据
+---@param mit  table    @修改缓存
+---@param tab  table    @原表数据
+---@param s2c  table    @通知消息
+---@param stp  string   @数据分类
+return function(mit, tab, s2c, stp)
+    ---当前统计修改
     local chge = mit[tab]
-
     if chge and next(chge) then
         local msge = {
-            type = type,
+            type = stp,
             k = {},
             v = {},
         }
@@ -19,4 +19,5 @@ return function(mit, tab, s2c, type)
             table.insert(msge.v, v)
         end
     end
+    return s2c
 end

@@ -8,11 +8,33 @@ local default = require("table.default.table")
 local logDebug = require("logDebug")
 local class = require("class")
 
+local function s2number(s)
+    if "nil" == s then 
+        return 
+    end 
+    return tonumber(s)
+end
+
+local function s2string(s)
+    if "nil" == s then 
+        return 
+    end 
+    return s
+end
+
+local function s2boolean(s)
+    if "nil" == s then 
+        return 
+    end
+    local n = tonumber(s)
+    return (0 ~= n) and true or false
+end
+
 ---基础转换
 local baseconver = {
-    ["number"] = tonumber,
-    ["string"] = tostring,
-    ["boolean"] = function(s) return (1 == tonumber(s)) and true or false end
+    ["number"] = s2number,
+    ["string"] = s2string,
+    ["boolean"] = s2boolean
 }
 
 ---分割字符

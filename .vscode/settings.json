@@ -70,6 +70,18 @@
         "chgs",
         "msge",
         "chge",
-        "tmap"
+        "tmap",
+        "stype",
+        "sdesc",
+        "svalue",
+        "readf",
+        "currentdir",
+        "cdata",
+        "csulist",
+        "islist",
+        "jslist",
+        "kinf",
+        "sname",
+        "cvalue"
     ]
 }

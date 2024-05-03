@@ -540,7 +540,7 @@ function this:rowPars(cfgClass, info)
     if len <= 2 then
         local kField = cfgClass[1].name
         if "nil" == kField then
-            local vField = cfgClass[2].name
+            local vField = cfgClass[2] and cfgClass[2].name
             return data[vField] or true
         end
     end

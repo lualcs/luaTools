@@ -534,6 +534,14 @@ function this:rowPars(cfgClass, info)
         local cvalue = self:parseValue(stype, svalue)
         data[sname] = cvalue
     end
+
+    ---默认只有1个字段为set or map 类型
+    local len = #cfgClass
+    if len <= 2 then
+        for k, v in pairs(data) do
+            data[k] = v[2] or true
+        end
+    end
     return data
 end
 

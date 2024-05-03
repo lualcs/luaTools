@@ -492,7 +492,7 @@ function this:configPars(data, name)
         local emmy = {
         }
 
-        local bInfo = cfgClass[1]
+        local bInfo = cfgClass[2]
         table.insert(emmy, "---@type ")
         table.insert(emmy, "table<")
         table.insert(emmy, aInfo.type)

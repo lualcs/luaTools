@@ -9,22 +9,22 @@ local logDebug = require("logDebug")
 local class = require("class")
 
 local function s2number(s)
-    if "nil" == s then 
-        return 
-    end 
+    if "nil" == s then
+        return
+    end
     return tonumber(s)
 end
 
 local function s2string(s)
-    if "nil" == s then 
-        return 
-    end 
+    if "nil" == s then
+        return
+    end
     return s
 end
 
 local function s2boolean(s)
-    if "nil" == s then 
-        return 
+    if "nil" == s then
+        return
     end
     local n = tonumber(s)
     return (0 ~= n) and true or false
@@ -487,9 +487,9 @@ function this:configPars(data, name)
 
     ---有可能没有内容
     local aInfo = cfgClass[1]
-    if aInfo and aInfo.name = "nil" then 
-         ---生成emmylua注解
-         local emmy = {
+    if aInfo and aInfo.name == "nil" then
+        ---生成emmylua注解
+        local emmy = {
         }
 
         local bInfo = cfgClass[1]
@@ -505,7 +505,6 @@ function this:configPars(data, name)
         table.insert(emmy, ">")
         ---保存解析文件
         self:writeLuaCfg(name, cfg, table.concat(emmy))
-
     elseif next(cfgClass) then
         ---生成emmylua注解
         local emmy = {

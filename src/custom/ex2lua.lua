@@ -560,13 +560,11 @@ function this:rowPars(cfgClass, info)
     for index, colInfo in ipairs(cfgClass) do
         ---有可能没有填
         local svalue = info[index]
-        if not svalue then
-            break
-        end
-
         ---跳过合并类型
         if colInfo.type:find("|") then
             mmap[colInfo.name] = colInfo.type
+        elseif not svalue then 
+            ---跳过空值
         else
             local stype = colInfo.type
             local sname = colInfo.name

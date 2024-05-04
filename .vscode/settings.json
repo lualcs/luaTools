@@ -90,6 +90,11 @@
         "slist",
         "defv",
         "sdefv",
-        "kcof"
+        "kcof",
+        "mlis",
+        "smerge",
+        "mmap",
+        "nmerge",
+        "tmerge"
     ]
 }

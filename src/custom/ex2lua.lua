@@ -313,9 +313,9 @@ function this:parseValue(stype, svalue)
         for i, inf in ipairs(custom) do
             local cof = baseconver[inf.type]
             if inf.defv then
-                vi = vi + 1---增加一个偏移量
+                vi = vi + 1 ---增加一个偏移量
                 cdata[inf.name] = cof(inf.defv)
-            else 
+            else
                 local s = slist[i - vi]
                 cdata[inf.name] = cof(s)
             end
@@ -336,7 +336,7 @@ function this:parseValue(stype, svalue)
             for i, kinf in ipairs(csulistInf) do
                 local kcof = baseconver[kinf.type]
                 if kinf.defv then
-                    vi = vi + 1---增加一个偏移量
+                    vi = vi + 1 ---增加一个偏移量
                     element[kinf.name] = kcof(kinf.defv)
                 else
                     local s = jslist[i - vi]
@@ -556,6 +556,7 @@ function this:rowPars(cfgClass, info)
     local struct = self.struct
     ---解析结构数据
     local data = {}
+    local mmap = {}
     for index, colInfo in ipairs(cfgClass) do
         ---有可能没有填
         local svalue = info[index]
@@ -563,11 +564,30 @@ function this:rowPars(cfgClass, info)
             break
         end
 
-        local stype = colInfo.type
-        local sname = colInfo.name
-        local sdefv = colInfo.defv
-        local cvalue = self:parseValue(stype, svalue)
-        data[sname] = cvalue
+        ---跳过合并类型
+        if colInfo.type:find("|") then
+            mmap[colInfo.name] = colInfo.type
+        else
+            local stype = colInfo.type
+            local sname = colInfo.name
+            local sdefv = colInfo.defv
+            local cvalue = self:parseValue(stype, svalue)
+            data[sname] = cvalue
+        end
+    end
+
+    ---处理合并字段
+    for nmerge, tmerge in ipairs(mmap) do
+        local slist = gsplit(tmerge, "|")
+        local merge = {}
+        for _, field in ipairs(slist) do
+            local infos = data[field]
+            data[field] = nil
+            for _, info in ipairs(infos) do
+                table.insert(merge, info)
+            end
+        end
+        data[nmerge] = merge
     end
 
     ---默认只有1个字段为set or map 类型

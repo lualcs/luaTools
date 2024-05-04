@@ -502,7 +502,7 @@ function this:configPars(data, name)
 
     ---有可能没有内容
     local aInfo = cfgClass[1]
-    if aInfo and aInfo.name == "nil" then
+    if aInfo and aInfo.name == "nil" then ---kv类型
         ---生成emmylua注解
         local emmy = {
         }
@@ -520,7 +520,7 @@ function this:configPars(data, name)
         table.insert(emmy, ">")
         ---保存解析文件
         self:writeLuaCfg(name, cfg, table.concat(emmy))
-    elseif next(cfgClass) then
+    elseif next(cfgClass) then ---常规类型
         ---生成emmylua注解
         local emmy = {
             "---@class ",
@@ -532,7 +532,14 @@ function this:configPars(data, name)
             table.insert(emmy, "---@field ")
             table.insert(emmy, info.name)
             table.insert(emmy, " ")
-            table.insert(emmy, info.type)
+            ---普通类型
+            local stype = info.type
+            if stype:find("|") then
+                local slist = gsplit(stype, "|")
+                table.insert(emmy, slist[1])
+            else
+                table.insert(emmy, info.type)
+            end
             table.insert(emmy, " @")
             table.insert(emmy, descrs[index])
             table.insert(emmy, "\n")
@@ -563,7 +570,7 @@ function this:rowPars(cfgClass, info)
         ---跳过合并类型
         if colInfo.type:find("|") then
             mmap[colInfo.name] = colInfo.type
-        elseif not svalue then 
+        elseif not svalue then
             ---跳过空值
         else
             local stype = colInfo.type
@@ -578,11 +585,14 @@ function this:rowPars(cfgClass, info)
     for nmerge, tmerge in pairs(mmap) do
         local slist = gsplit(tmerge, "|")
         local merge = {}
-        for _, field in ipairs(slist) do
-            local infos = data[field]
-            data[field] = nil
-            for _, info in ipairs(infos) do
-                table.insert(merge, info)
+        for index, field in ipairs(slist) do
+            ---第一个代表合并字段数据类型
+            if 1 ~= index then
+                local infos = data[field]
+                data[field] = nil
+                for _, info in ipairs(infos) do
+                    table.insert(merge, info)
+                end
             end
         end
         data[nmerge] = merge

@@ -309,10 +309,16 @@ function this:parseValue(stype, svalue)
     if custom then
         local slist = gsplit(svalue, ";", clear(out1))
         local cdata = {}
-        for i, s in ipairs(slist) do
-            local inf = custom[i]
+        local vi = 0
+        for i, inf in ipairs(custom) do
             local cof = baseconver[inf.type]
-            cdata[inf.name] = cof(s) or cof(inf.defv)
+            if inf.defv then
+                vi = vi + 1---增加一个偏移量
+                cdata[inf.name] = cof(inf.defv)
+            else 
+                local s = slist[i + vi]
+                cdata[inf.name] = cof(s)
+            end
         end
         return cdata
     end
@@ -326,10 +332,16 @@ function this:parseValue(stype, svalue)
         for j, is in ipairs(islist) do
             local jslist = gsplit(is, ";", clear(out2))
             local element = {}
-            for k, v in ipairs(jslist) do
-                local kinf = csulistInf[k]
+            local vi = 0
+            for i, kinf in ipairs(csulistInf) do
                 local kcof = baseconver[kinf.type]
-                element[kinf.name] = kcof(v) or kcof(kinf.defv)
+                if kinf.defv then
+                    vi = vi + 1---增加一个偏移量
+                    element[kinf.name] = kcof(kinf.defv)
+                else
+                    local s = jslist[i + vi]
+                    element[kinf.name] = kcof(s)
+                end
             end
             table.insert(cusArray, element)
         end

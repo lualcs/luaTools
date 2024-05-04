@@ -577,7 +577,7 @@ function this:rowPars(cfgClass, info)
     end
 
     ---处理合并字段
-    for nmerge, tmerge in ipairs(mmap) do
+    for nmerge, tmerge in pairs(mmap) do
         local slist = gsplit(tmerge, "|")
         local merge = {}
         for _, field in ipairs(slist) do

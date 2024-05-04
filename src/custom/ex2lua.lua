@@ -377,6 +377,7 @@ function this:structPars(data, name)
                 table.insert(semmys, s[2])
                 table.insert(semmys, " @")
                 table.insert(semmys, jdesc and jdesc:gsub("\n", " "))
+                table.insert(semmys, "\n")
             end
         end
         ---换行间隔不同结构

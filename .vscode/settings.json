@@ -82,6 +82,14 @@
         "jslist",
         "kinf",
         "sname",
-        "cvalue"
+        "cvalue",
+        "sbegin",
+        "gobal",
+        "descrs",
+        "typels",
+        "slist",
+        "defv",
+        "sdefv",
+        "kcof"
     ]
 }

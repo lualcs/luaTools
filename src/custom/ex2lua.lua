@@ -9,21 +9,21 @@ local logDebug = require("logDebug")
 local class = require("class")
 
 local function s2number(s)
-    if "nil" == s then
+    if "nil" == s or nil == s then
         return
     end
     return tonumber(s)
 end
 
 local function s2string(s)
-    if "nil" == s then
+    if "nil" == s or nil == s then
         return
     end
     return s
 end
 
 local function s2boolean(s)
-    if "nil" == s then
+    if "nil" == s or nil == s then
         return
     end
     local n = tonumber(s)
@@ -310,7 +310,8 @@ function this:parseValue(stype, svalue)
         local cdata = {}
         for i, s in ipairs(slist) do
             local inf = custom[i]
-            cdata[inf.name] = baseconver[inf.type](s)
+            local cof = baseconver[inf.type]
+            cdata[inf.name] = cof(s) or cof(inf.defv)
         end
         return cdata
     end
@@ -326,8 +327,8 @@ function this:parseValue(stype, svalue)
             local element = {}
             for k, v in ipairs(jslist) do
                 local kinf = csulistInf[k]
-                local kf = baseconver[kinf.type]
-                element[kinf.name] = kf(v)
+                local kcof = baseconver[kinf.type]
+                element[kinf.name] = kcof(v) or kcof(kinf.defv)
             end
             table.insert(cusArray, element)
         end
@@ -363,6 +364,7 @@ function this:structPars(data, name)
                 struct[cname][index] = {
                     name = s[1],
                     type = s[2],
+                    defv = s[3]
                     desc = jdesc and jdesc:gsub("\n", " ")
                 }
                 ssrots[cname][s[1]] = index
@@ -375,6 +377,9 @@ function this:structPars(data, name)
                 table.insert(semmys, " @")
                 table.insert(semmys, jdesc and jdesc:gsub("\n", " "))
                 table.insert(semmys, "\n")
+                table.insert(semmys, "---@field ")
+                table.insert(semmys, s[3])
+                table.insert(semmys, " string|nil @默认值\n")
             end
         end
         ---换行间隔不同结构
@@ -550,6 +555,7 @@ function this:rowPars(cfgClass, info)
 
         local stype = colInfo.type
         local sname = colInfo.name
+        local sdefv = colInfo.defv
         local cvalue = self:parseValue(stype, svalue)
         data[sname] = cvalue
     end

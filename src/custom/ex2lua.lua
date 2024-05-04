@@ -183,6 +183,7 @@ function this:launch()
     table.insert(semmys, "---@field name string @字段名称\n")
     table.insert(semmys, "---@field type string @字段类型\n")
     table.insert(semmys, "---@field desc string @字段描述\n")
+    table.insert(semmys, "---@field defv string|nil @默认值\n")
     table.insert(semmys, "\n")
 
     ---构建strucct field
@@ -376,10 +377,6 @@ function this:structPars(data, name)
                 table.insert(semmys, s[2])
                 table.insert(semmys, " @")
                 table.insert(semmys, jdesc and jdesc:gsub("\n", " "))
-                table.insert(semmys, "\n")
-                table.insert(semmys, "---@field ")
-                table.insert(semmys, s[3])
-                table.insert(semmys, " string|nil @默认值\n")
             end
         end
         ---换行间隔不同结构

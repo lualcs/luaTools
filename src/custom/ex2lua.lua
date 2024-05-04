@@ -364,7 +364,7 @@ function this:structPars(data, name)
                 struct[cname][index] = {
                     name = s[1],
                     type = s[2],
-                    defv = s[3]
+                    defv = s[3],
                     desc = jdesc and jdesc:gsub("\n", " ")
                 }
                 ssrots[cname][s[1]] = index

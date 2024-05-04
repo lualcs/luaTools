@@ -316,7 +316,7 @@ function this:parseValue(stype, svalue)
                 vi = vi + 1---增加一个偏移量
                 cdata[inf.name] = cof(inf.defv)
             else 
-                local s = slist[i + vi]
+                local s = slist[i - vi]
                 cdata[inf.name] = cof(s)
             end
         end
@@ -339,7 +339,7 @@ function this:parseValue(stype, svalue)
                     vi = vi + 1---增加一个偏移量
                     element[kinf.name] = kcof(kinf.defv)
                 else
-                    local s = jslist[i + vi]
+                    local s = jslist[i - vi]
                     element[kinf.name] = kcof(s)
                 end
             end

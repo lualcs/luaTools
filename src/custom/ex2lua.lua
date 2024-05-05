@@ -600,7 +600,7 @@ function this:rowPars(cfgClass, info)
 
     ---第一行出现#标识注释
     local rowFirst = info[1]
-    if rowFirst and rowFirst.find("#") then
+    if rowFirst and rowFirst:find("#") then
         return
     end
 

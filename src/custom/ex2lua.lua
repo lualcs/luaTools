@@ -605,7 +605,7 @@ function this:rowPars(cfgClass, info)
         ---跳过合并类型
         if colInfo.type:find("|") then
             mmap[colInfo.name] = colInfo
-        if not svalue then 
+        elseif not svalue then 
             ---过滤空值 
         elseif self:isFilter(colInfo.iuse) then
             ---跳过过滤

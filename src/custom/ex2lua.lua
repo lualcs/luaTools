@@ -2,6 +2,7 @@ local lfs = require("api_lfs")
 local md5 = require("api_md5")
 local gsplit = require("string.gsplit")
 local t2string = require("t2string")
+local t2stringEx = require("t2stringEx")
 local excel = require("api_excel")
 local clear = require("table.opt.clear")
 local default = require("table.default.table")
@@ -70,11 +71,13 @@ local this = class()
 ---@field fxstruct string @结构文件名称excel
 ---@field fglobal table<string,boolean> @全局文件名称
 ---@field isserver boolean @是否服务端
+---@field line boolean @是否换行
 
 ---构造函数
 ---@param param ex2luaParam
 function this:ctor(param)
     self.isserver = param.isserver
+    self.line = param.line and true or false
     ---目录
     self.readDir = param.readDir             --"./design/Excel/"
     self.writeDir = param.writeDir           --"./design/luacfg/"
@@ -152,7 +155,7 @@ function this:writef(fpath, data, emmy)
     if f then
         emmy = emmy or ""
         local sbegin = emmy .. "\n" .. "return "
-        local note = t2string(data, sbegin)
+        local note = self.line and t2string(data, sbegin) or t2stringEx(data, sbegin)
         f:write(note)
         f:close()
     end

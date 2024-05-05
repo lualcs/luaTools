@@ -8,6 +8,7 @@ local clear = require("table.opt.clear")
 local default = require("table.default.table")
 local logDebug = require("logDebug")
 local class = require("class")
+local ifString = require("ifString")
 
 local function s2number(s)
     if "nil" == s or nil == s then
@@ -600,7 +601,7 @@ function this:rowPars(cfgClass, info)
 
     ---第一行出现#标识注释
     local rowFirst = info[1]
-    if rowFirst and rowFirst:find("#") then
+    if ifString(rowFirst) and rowFirst:find("#") then
         return
     end
 

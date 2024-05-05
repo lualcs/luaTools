@@ -54,7 +54,11 @@ local function _t2sList(list, val, level, key, first)
         table.insert(list, "{")
     end
 
-    if not ifTable(val) then
+    if ifTable(val) then
+        if first then
+            table.insert(list, "\r\n")
+        end
+    else
         return
     end
 

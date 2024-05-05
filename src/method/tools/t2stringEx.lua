@@ -24,27 +24,27 @@ local function _t2sList(list, val, level, key, first)
     if ifString(key) then
         if ifSymbol(key) then
             table.insert(list, key)
-            table.insert(list, " = ")
+            table.insert(list, "=")
             table.insert(list, "{")
         else
             table.insert(list, "[\"")
             table.insert(list, tostring(key))
             table.insert(list, "\"]")
-            table.insert(list, " = ")
+            table.insert(list, "=")
             table.insert(list, "{")
         end
     elseif ifNumber(key) then
         table.insert(list, "[")
         table.insert(list, tostring(key))
         table.insert(list, "]")
-        table.insert(list, " = ")
+        table.insert(list, "=")
         table.insert(list, "{")
     elseif ifTable(key) then
         table.insert(list, "[")
         _t2sList(list, key, level)
         table.remove(list) --删除逗号
         table.insert(list, "}]")
-        table.insert(list, " = ")
+        table.insert(list, "=")
         table.insert(list, "{")
     elseif ifBoolean(key) then
         table.insert(list, "[")
@@ -79,7 +79,7 @@ local function _t2sList(list, val, level, key, first)
                     table.insert(list, "\"]")
                 end
 
-                table.insert(list, " = ")
+                table.insert(list, "=")
 
                 if ifString(v) then
                     table.insert(list, "\"")
@@ -92,7 +92,7 @@ local function _t2sList(list, val, level, key, first)
                 table.insert(list, "[")
                 table.insert(list, tostring(k))
                 table.insert(list, "]")
-                table.insert(list, " = ")
+                table.insert(list, "=")
 
                 if ifString(v) then
                     table.insert(list, "\"")

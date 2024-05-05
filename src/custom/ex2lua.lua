@@ -557,20 +557,22 @@ function this:configPars(data, name)
         }
 
         for index, info in ipairs(cfgClass) do
-            table.insert(emmy, "---@field ")
-            table.insert(emmy, info.name)
-            table.insert(emmy, " ")
-            ---普通类型
-            local stype = info.type
-            if stype:find("|") then
-                local slist = gsplit(stype, "|")
-                table.insert(emmy, slist[1])
-            else
-                table.insert(emmy, info.type)
+            if not self:isFilter(info.iuse) then
+                table.insert(emmy, "---@field ")
+                table.insert(emmy, info.name)
+                table.insert(emmy, " ")
+                ---普通类型
+                local stype = info.type
+                if stype:find("|") then
+                    local slist = gsplit(stype, "|")
+                    table.insert(emmy, slist[1])
+                else
+                    table.insert(emmy, info.type)
+                end
+                table.insert(emmy, " @")
+                table.insert(emmy, descrs[index])
+                table.insert(emmy, "\n")
             end
-            table.insert(emmy, " @")
-            table.insert(emmy, descrs[index])
-            table.insert(emmy, "\n")
         end
         table.insert(emmy, "\n")
         local first = cfgClass[1]

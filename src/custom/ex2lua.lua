@@ -300,11 +300,13 @@ function this:excelForRead(callback, ...)
     local colMax = e:sheetCol()
     for row = 1, rowMax do
         for col = 1, colMax do
-            local v = e:getGird(row, col)
-            if not v then
-                break
-            end
-            data[row][col] = v
+            repeat
+                local v = e:getGird(row, col)
+                if not v then
+                    break
+                end
+                data[row][col] = v
+            until true
         end
     end
     callback(self, data, ...)

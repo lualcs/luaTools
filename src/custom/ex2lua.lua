@@ -150,12 +150,13 @@ end
 ---@param fpath string @文件路径
 ---@param data table @配置标识
 ---@param emmy string|nil @注解
-function this:writef(fpath, data, emmy)
+---@param line boolean|nil @是否换行
+function this:writef(fpath, data, emmy, line)
     local f = io.open(fpath, "wb")
     if f then
         emmy = emmy or ""
         local sbegin = emmy .. "\n" .. "return "
-        local note = self.line and t2string(data, sbegin) or t2stringEx(data, sbegin)
+        local note = line and t2string(data, sbegin) or t2stringEx(data, sbegin)
         f:write(note)
         f:close()
     end
@@ -166,9 +167,10 @@ end
 ---@param fname string @文件名称
 ---@param data table @配置标识
 ---@param emmy string|nil @注解
+---@param line boolean|nil @是否换行
 function this:writeLuaCfg(fname, data, emmy)
     local fpath = self.writeDir .. fname .. self.wffix
-    this:writef(fpath, data, emmy)
+    this:writef(fpath, data, emmy, line)
 end
 
 ---生成md5码
@@ -204,7 +206,7 @@ function this:launch()
         self:excelMd5(fpatch)
     end
     ---保存md5码
-    self:writef(self.md5fpath, self.md5cache, "---@type table<string,string>")
+    self:writef(self.md5fpath, self.md5cache, "---@type table<string,string>", true)
 
     ---构建 struct head
     local semmys = self.semmys
@@ -227,11 +229,11 @@ function this:launch()
     table.insert(semmys, "\n---@type lua_struct ")
 
     ---保存结构信息
-    self:writef(self.structfpath, self.struct, table.concat(semmys))
+    self:writef(self.structfpath, self.struct, table.concat(semmys), true)
     ---保存结构索引
-    self:writef(self.metablefpath, self.metable)
+    self:writef(self.metablefpath, self.metable, nil, true)
     ---保存目录结构
-    self:writef(self.dirExcelfpath, self.dirExcel)
+    self:writef(self.dirExcelfpath, self.dirExcel, nil, true)
 end
 
 ---检查未解析文档
@@ -472,7 +474,7 @@ function this:gobalsPars(data, name)
     table.insert(emmy, "---@type ")
     table.insert(emmy, name)
     ---保存解析文件
-    self:writeLuaCfg(name, cfg, table.concat(emmy))
+    self:writeLuaCfg(name, cfg, table.concat(emmy), true)
 end
 
 ---解析常规配置
@@ -550,7 +552,7 @@ function this:configPars(data, name)
         end
         table.insert(emmy, ">")
         ---保存解析文件
-        self:writeLuaCfg(name, cfg, table.concat(emmy))
+        self:writeLuaCfg(name, cfg, table.concat(emmy), self.line)
     elseif next(cfgClass) then ---常规类型
         ---生成emmylua注解
         local emmy = {
@@ -586,7 +588,7 @@ function this:configPars(data, name)
         table.insert(emmy, name)
         table.insert(emmy, ">")
         ---保存解析文件
-        self:writeLuaCfg(name, cfg, table.concat(emmy))
+        self:writeLuaCfg(name, cfg, table.concat(emmy), self.line)
     end
 end
 
@@ -618,8 +620,8 @@ function this:rowPars(cfgClass, info)
 
     ---处理合并字段
     for nmerge, info in pairs(mmap) do
-        ---此列为过滤 
-        if self:isFilter(info.iuse) then 
+        ---此列为过滤
+        if self:isFilter(info.iuse) then
             break
         end
         local slist = gsplit(info.type, "|")
@@ -631,10 +633,10 @@ function this:rowPars(cfgClass, info)
                     break
                 end
 
-                ---内容为nil 
+                ---内容为nil
                 local infos = data[field]
-                if not infos then 
-                    break 
+                if not infos then
+                    break
                 end
 
                 ---合并处理
@@ -642,7 +644,6 @@ function this:rowPars(cfgClass, info)
                 for _, info in ipairs(infos) do
                     table.insert(merge, info)
                 end
-
             until true
         end
         data[nmerge] = merge

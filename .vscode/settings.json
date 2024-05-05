@@ -95,6 +95,10 @@
         "smerge",
         "mmap",
         "nmerge",
-        "tmerge"
+        "tmerge",
+        "isserver",
+        "iuse",
+        "usetype",
+        "commond"
     ]
 }

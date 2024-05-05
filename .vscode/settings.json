@@ -99,6 +99,7 @@
         "isserver",
         "iuse",
         "usetype",
-        "commond"
+        "commond",
+        "midx"
     ]
 }

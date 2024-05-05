@@ -605,14 +605,11 @@ function this:rowPars(cfgClass, info)
         ---跳过合并类型
         if colInfo.type:find("|") then
             mmap[colInfo.name] = colInfo
-        elseif (not svalue) and (not colInfo.defv) then
-            ---跳过空值
         elseif self:isFilter(colInfo.iuse) then
             ---跳过过滤
         else
             local stype = colInfo.type
             local sname = colInfo.name
-            local sdefv = colInfo.defv
             local cvalue = self:parseValue(stype, svalue)
             data[sname] = cvalue
         end

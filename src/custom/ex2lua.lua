@@ -615,17 +615,16 @@ function this:rowPars(cfgClass, info)
 
     ---处理合并字段
     for nmerge, info in pairs(mmap) do
+        ---此列为过滤 
+        if self:isFilter(info.iuse) then 
+            break
+        end
         local slist = gsplit(info.type, "|")
         local merge = {}
         for index, field in ipairs(slist) do
             repeat
                 ---第一个代表合并字段数据类型
                 if 1 == index then
-                    break
-                end
-
-                ---此列为过滤 
-                if self:isFilter(info.iuse) then 
                     break
                 end
 

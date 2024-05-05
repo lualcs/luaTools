@@ -599,7 +599,7 @@ function this:rowPars(cfgClass, info)
         local svalue = info[index]
         ---跳过合并类型
         if colInfo.type:find("|") then
-            mmap[colInfo.name] = colInfo.type
+            mmap[colInfo.name] = colInfo
         elseif not svalue then
             ---跳过空值
         elseif self:isFilter(colInfo.iuse) then
@@ -614,18 +614,34 @@ function this:rowPars(cfgClass, info)
     end
 
     ---处理合并字段
-    for nmerge, tmerge in pairs(mmap) do
-        local slist = gsplit(tmerge, "|")
+    for nmerge, info in pairs(mmap) do
+        local slist = gsplit(info.type, "|")
         local merge = {}
         for index, field in ipairs(slist) do
-            ---第一个代表合并字段数据类型
-            if 1 ~= index then
+            repeat
+                ---第一个代表合并字段数据类型
+                if 1 == index then
+                    break
+                end
+
+                ---此列为过滤 
+                if self:isFilter(info.iuse) then 
+                    break
+                end
+
+                ---内容为nil 
                 local infos = data[field]
+                if not infos then 
+                    break 
+                end
+
+                ---合并处理
                 data[field] = nil
                 for _, info in ipairs(infos) do
                     table.insert(merge, info)
                 end
-            end
+
+            until true
         end
         data[nmerge] = merge
     end

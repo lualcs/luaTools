@@ -55,6 +55,7 @@ build = {
       logPrint = "src/logs/logPrint.lua",
       peak = "src/method/tools/peak.lua",
       t2string = "src/method/tools/t2string.lua",
+      t2stringEx = "src/method/tools/t2stringEx.lua",
       enumerate = "src/custom/enumerate.lua",
       timer = "src/custom/timer.lua",
       gtimer = "src/singleClass/timer.lua",

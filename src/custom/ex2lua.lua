@@ -30,6 +30,15 @@ local function s2boolean(s)
     return (0 ~= n) and true or false
 end
 
+local function s2usetype(s)
+    if "server" == s then
+        return "server"
+    else
+        return "client"
+    end
+    return "all" ---都需要
+end
+
 ---基础转换
 local baseconver = {
     ["number"] = s2number,
@@ -60,10 +69,12 @@ local this = class()
 ---@field fstruct string @结构文件名称
 ---@field fxstruct string @结构文件名称excel
 ---@field fglobal table<string,boolean> @全局文件名称
+---@field isserver boolean @是否服务端
 
 ---构造函数
 ---@param param ex2luaParam
 function this:ctor(param)
+    self.isserver = param.isserver
     ---目录
     self.readDir = param.readDir             --"./design/Excel/"
     self.writeDir = param.writeDir           --"./design/luacfg/"
@@ -89,6 +100,21 @@ function this:ctor(param)
     self.fxstruct = param.fxstruct or "struct"
     ---全局
     self.fglobal = param.fglobal or { cfg_global = true }
+end
+
+---是否过滤
+---@param iuse string @字段类型
+function this:isFilter(iuse)
+    if self.isserver then
+        if "client" == iuse then
+            return true
+        end
+    else
+        if "server" == iuse then
+            return true
+        end
+    end
+    return false
 end
 
 ---加载MD5判断excel 是否变化
@@ -472,10 +498,12 @@ function this:configPars(data, name)
     local cfgClass = {}
     local cfgSorts = {}
     for index, name in ipairs(fields) do
+        local iuse = self.excel:getComment(2, index)
         table.insert(cfgClass, {
             name = name,
             type = typels[index],
-            desc = descrs[index]
+            desc = descrs[index],
+            iuse = s2usetype(iuse)
         })
         cfgSorts[name] = index
     end
@@ -572,6 +600,8 @@ function this:rowPars(cfgClass, info)
             mmap[colInfo.name] = colInfo.type
         elseif not svalue then
             ---跳过空值
+        elseif self:isFilter(colInfo.iuse) then
+            ---跳过过滤
         else
             local stype = colInfo.type
             local sname = colInfo.name

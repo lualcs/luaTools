@@ -33,7 +33,7 @@ end
 local function s2usetype(s)
     if "server" == s then
         return "server"
-    else
+    elseif "client" == s then
         return "client"
     end
     return "all" ---都需要

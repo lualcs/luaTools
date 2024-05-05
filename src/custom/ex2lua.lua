@@ -597,6 +597,13 @@ end
 ---解析行数据
 ---@param info any
 function this:rowPars(cfgClass, info)
+
+    ---第一行出现#标识注释
+    local rowFirst = info[1]
+    if rowFirst and rowFirst.find("#") then
+        return
+    end
+
     local struct = self.struct
     ---解析结构数据
     local data = {}

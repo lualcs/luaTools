@@ -55,6 +55,43 @@ local arrayplit = {
     ["boolean[]"] = ";",
 }
 
+---分割字符
+local mapplit = {
+    ["table<string,number>"] = ",",
+    ["table<string,boolean>"] = ",",
+    ["table<string,string>"] = ",",
+    ["table<number,number>"] = ",",
+    ["table<number,boolean>"] = ",",
+    ["table<number,string>"] = ",",
+    ["table<boolean,number>"] = ",",
+    ["table<boolean,boolean>"] = ",",
+    ["table<boolean,string>"] = ",",
+}
+
+local mapkfun = {
+    ["table<string,number>"] = s2string,
+    ["table<string,boolean>"] = s2string,
+    ["table<string,string>"] = s2string,
+    ["table<number,number>"] = s2number,
+    ["table<number,boolean>"] = s2number,
+    ["table<number,string>"] = s2number,
+    ["table<boolean,number>"] = s2boolean,
+    ["table<boolean,boolean>"] = s2boolean,
+    ["table<boolean,string>"] = s2boolean,
+}
+
+local mapvfun = {
+    ["table<string,number>"] = s2number,
+    ["table<string,boolean>"] = s2boolean,
+    ["table<string,string>"] = s2string,
+    ["table<number,number>"] = s2number,
+    ["table<number,boolean>"] = s2boolean,
+    ["table<number,string>"] = s2string,
+    ["table<boolean,number>"] = s2number,
+    ["table<boolean,boolean>"] = s2boolean,
+    ["table<boolean,string>"] = s2string,
+}
+
 ---@class excel2luaconfig @excel转lua配置表
 local this = class()
 
@@ -336,6 +373,22 @@ function this:parseValue(stype, svalue)
             array[i] = bf(s)
         end
         return array
+    end
+
+    ---map类型
+    local ms = mapplit[stype]
+    if ms then
+        local kf = mapkfun[stype]
+        local vf = mapvfun[stype]
+        local slist = gsplit(svalue, ",", clear(out1))
+        local map = {}
+        for _, s in ipairs(slist) do
+            local kvs = gsplit(svalue, "=", clear(out2))
+            local k = kf(kvs[1])
+            local v = kf(kvs[2])
+            map[k] = v
+        end
+        return map
     end
 
     ---单个复合结构

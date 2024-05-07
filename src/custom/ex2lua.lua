@@ -41,11 +41,19 @@ local function s2usetype(s)
     return "all" ---都需要
 end
 
+local function s2table(s)
+    if not s then 
+        return {} 
+    end
+    return loadstring("return " .. s)()
+end
+
 ---基础转换
 local baseconver = {
     ["number"] = s2number,
     ["string"] = s2string,
-    ["boolean"] = s2boolean
+    ["boolean"] = s2boolean,
+    ["table"] = s2table
 }
 
 ---分割字符
@@ -668,8 +676,8 @@ function this:rowPars(cfgClass, info)
         ---跳过合并类型
         if colInfo.type:find("|") then
             mmap[colInfo.name] = colInfo
-        elseif not svalue then 
-            ---过滤空值 
+        elseif (not svalue) and (stype ~= "table") then 
+            ---过滤空值-或者默认表
         elseif self:isFilter(colInfo.iuse) then
             ---跳过过滤
         else

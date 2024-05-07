@@ -674,14 +674,14 @@ function this:rowPars(cfgClass, info)
         ---有可能没有填
         local svalue = info[index]
         ---跳过合并类型
-        if colInfo.type:find("|") then
+        local stype = colInfo.type
+        if stype:find("|") then
             mmap[colInfo.name] = colInfo
         elseif (not svalue) and (stype ~= "table") then 
             ---过滤空值-或者默认表
         elseif self:isFilter(colInfo.iuse) then
             ---跳过过滤
         else
-            local stype = colInfo.type
             local sname = colInfo.name
             local cvalue = self:parseValue(stype, svalue)
             data[sname] = cvalue

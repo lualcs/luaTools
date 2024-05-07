@@ -383,7 +383,7 @@ function this:parseValue(stype, svalue)
         local slist = gsplit(svalue, ",", clear(out1))
         local map = {}
         for _, s in ipairs(slist) do
-            local kvs = gsplit(svalue, "=", clear(out2))
+            local kvs = gsplit(s, "=", clear(out2))
             local k = kf(kvs[1])
             local v = kf(kvs[2])
             map[k] = v

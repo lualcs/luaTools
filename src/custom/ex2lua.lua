@@ -385,7 +385,7 @@ function this:parseValue(stype, svalue)
         for _, s in ipairs(slist) do
             local kvs = gsplit(s, "=", clear(out2))
             local k = kf(kvs[1])
-            local v = kf(kvs[2])
+            local v = vf(kvs[2])
             map[k] = v
         end
         return map

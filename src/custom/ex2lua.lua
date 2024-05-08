@@ -592,6 +592,12 @@ function this:configPars(data, name)
             if not rowData then
                 break
             end
+            if nil == info[1] then 
+                logDebug({
+                    name = name,
+                    info = info,
+                })
+            end
             cfg[info[1]] = rowData
         until true
     end
@@ -658,10 +664,10 @@ end
 
 ---解析行数据
 ---@param info any
-function this:rowPars(cfgClass, info)
+function this:rowPars(cfgClass, rowData)
 
     ---第一行出现#标识注释
-    local rowFirst = info[1]
+    local rowFirst = rowData[1]
     if ifString(rowFirst) and rowFirst:find("#") then
         return
     end
@@ -672,7 +678,7 @@ function this:rowPars(cfgClass, info)
     local mmap = {}
     for index, colInfo in ipairs(cfgClass) do
         ---有可能没有填
-        local svalue = info[index]
+        local svalue = rowData[index]
         ---跳过合并类型
         local stype = colInfo.type
         if stype:find("|") then

@@ -42,10 +42,19 @@ local function s2usetype(s)
 end
 
 local function s2table(s)
-    if not s then 
-        return {} 
+    if not s then
+        return {}
     end
-    return loadstring("return " .. s)()
+
+    local f = loadstring("return " .. s)
+    if not f then
+        if s:find("{") or s:find("}") then
+            logDebug(s)
+        else 
+            return s
+        end
+    end
+    return f()
 end
 
 ---基础转换

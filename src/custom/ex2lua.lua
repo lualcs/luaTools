@@ -721,8 +721,8 @@ function this:rowPars(cfgClass, info)
 
     ---默认只有1个字段为set or map 类型
     local len = #cfgClass
-    if len <= 2 then
-        local kField = cfgClass[1].name
+    local kField = cfgClass[1].name
+    if (len <= 2) or ("nil" == kField) then
         if "nil" == kField then
             local vField = cfgClass[2] and cfgClass[2].name
             return data[vField] or true

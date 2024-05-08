@@ -41,11 +41,28 @@ local function s2usetype(s)
     return "all" ---都需要
 end
 
+local function s2table(s)
+    if not s then
+        return {}
+    end
+
+    local f = loadstring("return " .. s)
+    if not f then
+        if s:find("{") or s:find("}") then
+            logDebug(s)
+        else 
+            return s
+        end
+    end
+    return f()
+end
+
 ---基础转换
 local baseconver = {
     ["number"] = s2number,
     ["string"] = s2string,
-    ["boolean"] = s2boolean
+    ["boolean"] = s2boolean,
+    ["table"] = s2table
 }
 
 ---分割字符
@@ -53,6 +70,43 @@ local arrayplit = {
     ["number[]"] = ";",
     ["string[]"] = ";",
     ["boolean[]"] = ";",
+}
+
+---分割字符
+local mapplit = {
+    ["table<string,number>"] = ",",
+    ["table<string,boolean>"] = ",",
+    ["table<string,string>"] = ",",
+    ["table<number,number>"] = ",",
+    ["table<number,boolean>"] = ",",
+    ["table<number,string>"] = ",",
+    ["table<boolean,number>"] = ",",
+    ["table<boolean,boolean>"] = ",",
+    ["table<boolean,string>"] = ",",
+}
+
+local mapkfun = {
+    ["table<string,number>"] = s2string,
+    ["table<string,boolean>"] = s2string,
+    ["table<string,string>"] = s2string,
+    ["table<number,number>"] = s2number,
+    ["table<number,boolean>"] = s2number,
+    ["table<number,string>"] = s2number,
+    ["table<boolean,number>"] = s2boolean,
+    ["table<boolean,boolean>"] = s2boolean,
+    ["table<boolean,string>"] = s2boolean,
+}
+
+local mapvfun = {
+    ["table<string,number>"] = s2number,
+    ["table<string,boolean>"] = s2boolean,
+    ["table<string,string>"] = s2string,
+    ["table<number,number>"] = s2number,
+    ["table<number,boolean>"] = s2boolean,
+    ["table<number,string>"] = s2string,
+    ["table<boolean,number>"] = s2number,
+    ["table<boolean,boolean>"] = s2boolean,
+    ["table<boolean,string>"] = s2string,
 }
 
 ---@class excel2luaconfig @excel转lua配置表
@@ -338,6 +392,22 @@ function this:parseValue(stype, svalue)
         return array
     end
 
+    ---map类型
+    local ms = mapplit[stype]
+    if ms then
+        local kf = mapkfun[stype]
+        local vf = mapvfun[stype]
+        local slist = gsplit(svalue, ",", clear(out1))
+        local map = {}
+        for _, s in ipairs(slist) do
+            local kvs = gsplit(s, "=", clear(out2))
+            local k = kf(kvs[1])
+            local v = vf(kvs[2])
+            map[k] = v
+        end
+        return map
+    end
+
     ---单个复合结构
     local custom = rawget(struct, stype)
     if custom then
@@ -531,6 +601,12 @@ function this:configPars(data, name)
             if not rowData then
                 break
             end
+            if nil == info[1] then 
+                logDebug({
+                    name = name,
+                    info = info,
+                })
+            end
             cfg[info[1]] = rowData
         until true
     end
@@ -597,10 +673,10 @@ end
 
 ---解析行数据
 ---@param info any
-function this:rowPars(cfgClass, info)
+function this:rowPars(cfgClass, rowData)
 
     ---第一行出现#标识注释
-    local rowFirst = info[1]
+    local rowFirst = rowData[1]
     if ifString(rowFirst) and rowFirst:find("#") then
         return
     end
@@ -611,16 +687,16 @@ function this:rowPars(cfgClass, info)
     local mmap = {}
     for index, colInfo in ipairs(cfgClass) do
         ---有可能没有填
-        local svalue = info[index]
+        local svalue = rowData[index]
         ---跳过合并类型
-        if colInfo.type:find("|") then
+        local stype = colInfo.type
+        if stype:find("|") then
             mmap[colInfo.name] = colInfo
-        elseif not svalue then 
-            ---过滤空值 
+        elseif (not svalue) and (stype ~= "table") then 
+            ---过滤空值-或者默认表
         elseif self:isFilter(colInfo.iuse) then
             ---跳过过滤
         else
-            local stype = colInfo.type
             local sname = colInfo.name
             local cvalue = self:parseValue(stype, svalue)
             data[sname] = cvalue
@@ -660,8 +736,8 @@ function this:rowPars(cfgClass, info)
 
     ---默认只有1个字段为set or map 类型
     local len = #cfgClass
-    if len <= 2 then
-        local kField = cfgClass[1].name
+    local kField = cfgClass[1].name
+    if (len <= 2) or ("nil" == kField) then
         if "nil" == kField then
             local vField = cfgClass[2] and cfgClass[2].name
             return data[vField] or true

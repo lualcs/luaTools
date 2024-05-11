@@ -50,7 +50,7 @@ local function s2table(s)
     if not f then
         if s:find("{") or s:find("}") then
             logDebug(s)
-        else 
+        else
             return s
         end
     end
@@ -211,10 +211,10 @@ function this:writef(fpath, data, emmy, line)
     if f then
         emmy = emmy or ""
         local sbegin = emmy .. "\n" .. "return "
-        local note 
-        if line then 
+        local note
+        if line then
             note = t2string(data, sbegin, nil, self.rowSort)
-        else 
+        else
             note = t2stringEx(data, sbegin, nil, self.rowSort)
         end
         f:write(note)
@@ -533,12 +533,14 @@ function this:gobalsPars(data, name)
     table.insert(emmy, " @全局配置\n")
 
     ---遍历表
+    local rowSort = {}
     for row, info in ipairs(data) do
         local sdesc = info[1]
         local field = info[2]
         local stype = info[3]
         local svalue = info[4]
         cfg[field] = self:parseValue(stype, svalue)
+        table.insert(rowSort, field)
         table.insert(emmy, "---@field ")
         table.insert(emmy, field)
         table.insert(emmy, " ")
@@ -552,7 +554,9 @@ function this:gobalsPars(data, name)
     table.insert(emmy, "---@type ")
     table.insert(emmy, name)
     ---保存解析文件
+    self.rowSort = rowSort
     self:writeLuaCfg(name, cfg, table.concat(emmy), true)
+    self.rowSort = nil
 end
 
 ---解析常规配置
@@ -611,7 +615,7 @@ function this:configPars(data, name)
             local key = info[1]
             cfg[key] = rowData
             table.insert(rowSort, key)
-            if nil == key then 
+            if nil == key then
                 logDebug({
                     name = name,
                     info = info,
@@ -686,7 +690,6 @@ end
 ---解析行数据
 ---@param info any
 function this:rowPars(cfgClass, rowData)
-
     ---第一行出现#标识注释
     local rowFirst = rowData[1]
     if ifString(rowFirst) and rowFirst:find("#") then
@@ -704,7 +707,7 @@ function this:rowPars(cfgClass, rowData)
         local stype = colInfo.type
         if stype:find("|") then
             mmap[colInfo.name] = colInfo
-        elseif (not svalue) and (stype ~= "table") then 
+        elseif (not svalue) and (stype ~= "table") then
             ---过滤空值-或者默认表
         elseif self:isFilter(colInfo.iuse) then
             ---跳过过滤

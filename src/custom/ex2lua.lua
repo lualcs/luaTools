@@ -843,6 +843,10 @@ end
 ---迭代器
 function this:t2pairs(t)
     local tsort = self.tsort
+    if not tsort then 
+        return pairs(t)
+    end 
+    
     local preIdx = 0
     local function fnext(t, k)
         local mk = tsort[preIdx + 1]

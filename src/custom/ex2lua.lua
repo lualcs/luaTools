@@ -679,6 +679,7 @@ function this:configPars(data, name)
         ---保存解析文件
         self.rowSort = rowSort
         self:writeLuaCfg(name, cfg, table.concat(emmy), self.line)
+        self.rowSort = nil
     end
 end
 

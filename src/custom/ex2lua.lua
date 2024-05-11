@@ -157,7 +157,12 @@ function this:writef(fpath, data, emmy, line)
     if f then
         emmy = emmy or ""
         local sbegin = emmy .. "\n" .. "return "
-        local note = line and t2string(data, sbegin) or t2stringEx(data, sbegin)
+        local note 
+        if line then 
+            note = t2string(data, sbegin, nil, self.rowSort)
+        else 
+            note = t2stringEx(data, sbegin, nil, self.rowSort)
+        end
         f:write(note)
         f:close()
     end
@@ -484,6 +489,8 @@ end
 ---@param data string[][]
 ---@param name string @sheets名称
 function this:configPars(data, name)
+    ---行顺序
+    local rowSort = {}
     ---读取结构配置
     local struct = self.struct
     if not struct then
@@ -531,7 +538,9 @@ function this:configPars(data, name)
             if not rowData then
                 break
             end
-            cfg[info[1]] = rowData
+            local key = info[1]
+            cfg[key] = rowData
+            table.insert(rowSort, key)
         until true
     end
 
@@ -591,6 +600,7 @@ function this:configPars(data, name)
         table.insert(emmy, name)
         table.insert(emmy, ">")
         ---保存解析文件
+        self.rowSort = rowSort
         self:writeLuaCfg(name, cfg, table.concat(emmy), self.line)
     end
 end
@@ -598,7 +608,6 @@ end
 ---解析行数据
 ---@param info any
 function this:rowPars(cfgClass, info)
-
     ---第一行出现#标识注释
     local rowFirst = info[1]
     if ifString(rowFirst) and rowFirst:find("#") then
@@ -615,8 +624,8 @@ function this:rowPars(cfgClass, info)
         ---跳过合并类型
         if colInfo.type:find("|") then
             mmap[colInfo.name] = colInfo
-        elseif not svalue then 
-            ---过滤空值 
+        elseif not svalue then
+            ---过滤空值
         elseif self:isFilter(colInfo.iuse) then
             ---跳过过滤
         else

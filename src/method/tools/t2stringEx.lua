@@ -6,6 +6,7 @@ local ifString = require("ifString")
 local ifSymbol = require("ifSymbol")
 
 local tmap = {}
+local tsort = nil
 
 ---table转字符串
 ---@param list 	string[]  						@存储字符串
@@ -60,6 +61,18 @@ local function _t2sList(list, val, level, key, first)
         end
     else
         return
+    end
+
+    ---处理打印顺序
+    local fpars = pairs
+    if first and tsort then
+        local preIdx = 0
+        fpars = function(t, k)
+            local mk = tsort[preIdx + 1]
+            preIdx = preIdx + 1
+            local mv = val[mk]
+            return mk, mv
+        end
     end
 
     for k, v in pairs(val) do
@@ -124,8 +137,10 @@ local copy1 = {}
 ---@param  v table|string|function|thread|userdata|lightuserdata
 ---@param  b string|nil @开头字符串
 ---@param  e string|nil @结尾字符串
+---@param  sort any[]|nil @序号
 ---@return string
-return function(v, b, e)
+return function(v, b, e, sort)
+    tsort = sort
     clear(tmap)
     ---@type string[]
     local list = clear(copy1)

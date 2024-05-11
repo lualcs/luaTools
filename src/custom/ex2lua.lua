@@ -806,10 +806,17 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
     for rowKey, rowData in self:t2pairs(tuse) do
         ---换行
         table.insert(slist, "\n")
-        ---填充key
-        table.insert(slist, "[\"")
-        table.insert(slist, rowKey)
-        table.insert(slist, "\"]=")
+        if ifString(rowKey) then
+            ---填充key
+            table.insert(slist, "[\"")
+            table.insert(slist, rowKey)
+            table.insert(slist, "\"]=")
+        else
+            ---填充key
+            table.insert(slist, "[")
+            table.insert(slist, rowKey)
+            table.insert(slist, "]=")
+        end
         ---填充行
         for col, info in ipairs(rowField) do
             local colKey = info.name

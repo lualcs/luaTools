@@ -6,13 +6,15 @@ local ifString = require("ifString")
 local ifSymbol = require("ifSymbol")
 
 local tmap = {}
+local tsort = nil
 
 ---table转字符串
 ---@param list 	string[]  						@存储字符串
 ---@param val  	table	 						@lua-table
 ---@param level	number|nil	 					@递归深度
 ---@param key	number|boolean|string|table|nil	@归属key值
-local function _t2sList(list, val, level, key)
+---@param first	boolean|nil	@是否首次调用
+local function _t2sList(list, val, level, key, first)
     if ifString(val) then
         table.insert(list, val)
     elseif not ifTable(val) then
@@ -57,7 +59,7 @@ local function _t2sList(list, val, level, key)
         table.insert(list, indent)
         table.insert(list, "[")
         _t2sList(list, key, level)
-        table.remove(list)--删除逗号
+        table.remove(list) --删除逗号
         table.insert(list, "}]")
         table.insert(list, "\r\n")
         table.insert(list, indent)
@@ -79,7 +81,19 @@ local function _t2sList(list, val, level, key)
         return
     end
 
-    for k, v in pairs(val) do
+    ---处理打印顺序
+    local fpars = pairs
+    if first and tsort then
+        local preIdx = 0
+        fpars = function(t, k)
+            local mk = tsort[preIdx + 1]
+            preIdx = preIdx + 1
+            local mv = val[mk]
+            return mk, mv
+        end
+    end
+
+    for k, v in fpars(val) do
         --v是table k非table
         if ifTable(v) then
             if not tmap[v] then
@@ -156,15 +170,17 @@ local copy1 = {}
 ---@param  v table|string|function|thread|userdata|lightuserdata
 ---@param  b string|nil @开头字符串
 ---@param  e string|nil @结尾字符串
+---@param  sort any[]|nil @序号
 ---@return string
-return function(v, b, e)
+return function(v, b, e, sort)
+    tsort = sort
     clear(tmap)
     ---@type string[]
     local list = clear(copy1)
     if ifTable(v) then
         tmap[v] = true
         table.insert(list, b)
-        _t2sList(list, v, 0)
+        _t2sList(list, v, 0, nil, true)
         table.insert(list, e)
         return table.concat(list)
     end
@@ -174,5 +190,3 @@ return function(v, b, e)
     table.insert(list, e)
     return table.concat(list)
 end
-
-

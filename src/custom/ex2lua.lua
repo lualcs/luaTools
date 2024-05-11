@@ -211,7 +211,12 @@ function this:writef(fpath, data, emmy, line)
     if f then
         emmy = emmy or ""
         local sbegin = emmy .. "\n" .. "return "
-        local note = line and t2string(data, sbegin) or t2stringEx(data, sbegin)
+        local note 
+        if line then 
+            note = t2string(data, sbegin, nil, self.rowSort)
+        else 
+            note = t2stringEx(data, sbegin, nil, self.rowSort)
+        end
         f:write(note)
         f:close()
     end
@@ -554,6 +559,8 @@ end
 ---@param data string[][]
 ---@param name string @sheets名称
 function this:configPars(data, name)
+    ---行顺序
+    local rowSort = {}
     ---读取结构配置
     local struct = self.struct
     if not struct then
@@ -601,7 +608,10 @@ function this:configPars(data, name)
             if not rowData then
                 break
             end
-            if nil == info[1] then 
+            local key = info[1]
+            cfg[key] = rowData
+            table.insert(rowSort, key)
+            if nil == key then 
                 logDebug({
                     name = name,
                     info = info,
@@ -667,7 +677,9 @@ function this:configPars(data, name)
         table.insert(emmy, name)
         table.insert(emmy, ">")
         ---保存解析文件
+        self.rowSort = rowSort
         self:writeLuaCfg(name, cfg, table.concat(emmy), self.line)
+        self.rowSort = nil
     end
 end
 

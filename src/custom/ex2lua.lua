@@ -850,7 +850,7 @@ function this:t2pairs(t)
         local mv = val[mk]
         return mk, mv
     end
-    return t, fnext, nil
+    return fnext, t, nil
 end
 
 return this

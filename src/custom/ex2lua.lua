@@ -816,7 +816,7 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
             if nil ~= rowData[colKey] then
                 ---填充key
                 table.insert(slist, "[\"")
-                table.insert(colKey)
+                table.insert(slist, colKey)
                 table.insert(slist, "\"]=")
                 ---填充val
                 local val = rowData[info.name]
@@ -824,7 +824,7 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
             else
                 ---填充key
                 table.insert(slist, "[\"")
-                table.insert(rowKey)
+                table.insert(slist, rowKey)
                 table.insert(slist, "\"]=")
                 ---填充val
                 table.insert(slist, specialVaue(rowData))
@@ -843,10 +843,10 @@ end
 ---迭代器
 function this:t2pairs(t)
     local tsort = self.tsort
-    if not tsort then 
+    if not tsort then
         return pairs(t)
-    end 
-    
+    end
+
     local preIdx = 0
     local function fnext(t, k)
         local mk = tsort[preIdx + 1]

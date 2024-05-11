@@ -838,6 +838,7 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
 
     table.insert(slist, "\n}")
     table.insert(slist, send)
+    logDebug(slist)
     return table.concat(slist)
 end
 

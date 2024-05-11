@@ -10,6 +10,12 @@ local logDebug = require("logDebug")
 local class = require("class")
 local ifString = require("ifString")
 
+---缓存特殊值
+uvcache = {}
+local function specialVaue(v)
+    return uvcache[v] and v
+end
+
 local function s2number(s)
     if "nil" == s or nil == s then
         return
@@ -43,7 +49,9 @@ end
 
 local function s2table(s)
     if not s then
-        return {}
+        local ret = {}
+        uvcache[ret] = "{}"
+        return ret
     end
 
     local f = loadstring("return " .. s)
@@ -54,7 +62,9 @@ local function s2table(s)
             return s
         end
     end
-    return f()
+    local ret = f()
+    uvcache[ret] = s
+    return ret
 end
 
 ---基础转换
@@ -131,6 +141,8 @@ local this = class()
 ---构造函数
 ---@param param ex2luaParam
 function this:ctor(param)
+    ---用于保存源数据内容
+    self.kv = {}
     self.isserver = param.isserver
     self.line = param.line and true or false
     ---目录
@@ -212,7 +224,9 @@ function this:writef(fpath, data, emmy, line)
         emmy = emmy or ""
         local sbegin = emmy .. "\n" .. "return "
         local note
-        if line then
+        if self.srcData and self.rowField then 
+            note = this:tstring(self.srcData, data, self.rowField, sbegin, nil)
+        elseif line then
             note = t2string(data, sbegin, nil, self.rowSort)
         else
             note = t2stringEx(data, sbegin, nil, self.rowSort)
@@ -404,12 +418,28 @@ function this:parseValue(stype, svalue)
         local vf = mapvfun[stype]
         local slist = gsplit(svalue, ",", clear(out1))
         local map = {}
+        local sls = {"{"}
         for _, s in ipairs(slist) do
             local kvs = gsplit(s, "=", clear(out2))
             local k = kf(kvs[1])
             local v = vf(kvs[2])
             map[k] = v
+            ---填充key
+            table.insert(sls,"[")
+            table.insert(sls,k)
+            table.insert(sls,"]")
+            ---填充value
+            if s2string != vf then
+                table.insert(sls,v)
+            else
+                ---字符串都用这种方式
+                table.insert(sls,"[[")
+                table.insert(sls,v)
+                table.insert(sls,"]]")
+            end
         end
+        table.insert(sls,"}")
+        uvcache[map] = table.concat(sls)
         return map
     end
 
@@ -682,8 +712,12 @@ function this:configPars(data, name)
         table.insert(emmy, ">")
         ---保存解析文件
         self.rowSort = rowSort
+        self.srcData = data
+        self.rowField = cfgClass
         self:writeLuaCfg(name, cfg, table.concat(emmy), self.line)
         self.rowSort = nil
+        self.srcData = nil
+        self.rowField = nil
     end
 end
 
@@ -759,6 +793,66 @@ function this:rowPars(cfgClass, rowData)
         end
     end
     return data
+end
+
+---表数据转字符串
+---@param tsrc any @原表数据
+---@param tuse any @打表数据
+---@param rowField lua_struct[]@行数据
+---@return string @
+function this:tstring(tsrc, tuse, rowField, sbegin, send)
+    local colLen = #rowField
+    local slist = { sbegin, "{" }
+    for rowKey, rowData in self:t2pairs(tuse) do
+        ---换行
+        table.insert(slist, "\n")
+        ---填充key
+        table.insert(slist, "[\"")
+        table.insert(slist, rowKey)
+        table.insert(slist, "\"]=")
+        ---填充行
+        for col, info in ipairs(rowField) do
+            local colKey = info.name
+            if nil ~= rowData[colKey] then
+                ---填充key
+                table.insert(slist, "[\"")
+                table.insert(colKey)
+                table.insert(slist, "\"]=")
+                ---填充val
+                local val = rowData[info.name]
+                table.insert(slist,specialVaue(val))
+            else 
+                ---填充key
+                table.insert(slist, "[\"")
+                table.insert(rowKey)
+                table.insert(slist, "\"]=")
+                ---填充val
+                table.insert(slist,specialVaue(rowData))
+            end
+            table.insert(slist, ",")
+        end
+        table.insert(slist, rowKey)
+        table.insert(slist, ",")
+    end
+
+    table.insert(slist, ""\n"}")
+    table.insert(slist, send)
+    return table.concat(slist)
+end
+
+---迭代器
+function this:t2pairs(t)
+    local tsort = self.tsort
+    return function()
+        local preIdx = 0
+        local function fnext(t, k)
+            local mk = tsort[preIdx + 1]
+            preIdx = preIdx + 1
+            local mv = val[mk]
+            return mk, mv
+        end
+        return t, fnext, nil
+    end
 end
 
 return this

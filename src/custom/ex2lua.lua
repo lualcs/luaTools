@@ -795,15 +795,6 @@ function this:rowPars(cfgClass, rowData)
     return data
 end
 
-local table_insert = table.insert
-
-function table.insert(t, v)
-    if type(v) == "table" then
-        print(debug.traceback())
-    end
-    table_insert(t, v)
-end
-
 ---表数据转字符串
 ---@param tsrc any @原表数据
 ---@param tuse any @打表数据
@@ -830,13 +821,14 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
                 ---填充val
                 local val = rowData[info.name]
                 table.insert(slist, specialVaue(val))
-            else
+            elseif not self:isFilter(info.iuse) then
                 ---填充key
                 table.insert(slist, "[\"")
                 table.insert(slist, rowKey)
                 table.insert(slist, "\"]=")
                 ---填充val
-                table.insert(slist, specialVaue(rowData))
+                local sval = specialVaue(rowData)
+                table.insert(slist, sval)
             end
             table.insert(slist, ",")
         end
@@ -846,7 +838,6 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
 
     table.insert(slist, "\n}")
     table.insert(slist, send)
-    logDebug(slist)
     return table.concat(slist)
 end
 

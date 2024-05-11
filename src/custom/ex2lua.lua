@@ -815,14 +815,33 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
         for col, info in ipairs(rowField) do
             local colKey = info.name
             if nil ~= rowData[colKey] then
-                ---填充key
-                table.insert(slist, "[\"")
-                table.insert(slist, colKey)
-                table.insert(slist, "\"]=")
-                ---填充val
-                local val = rowData[info.name]
-                table.insert(slist, specialVaue(val))
-                table.insert(slist, ",")
+                if ifString(colKey) then
+                    ---填充key
+                    table.insert(slist, "[\"")
+                    table.insert(slist, colKey)
+                    table.insert(slist, "\"]=")
+                else
+                    ---填充key
+                    table.insert(slist, "[")
+                    table.insert(slist, colKey)
+                    table.insert(slist, "]=")
+                end
+
+
+                if info.type == "string" then
+                    ---填充val
+                    local val = rowData[info.name]
+                    local tar = specialVaue(val)
+                    table.insert(slist, "[[")
+                    table.insert(slist, tar)
+                    table.insert(slist, "]],")
+                else
+                    ---填充val
+                    local val = rowData[info.name]
+                    local tar = specialVaue(val)
+                    table.insert(slist, tar)
+                    table.insert(slist, ",")
+                end
             elseif not self:isFilter(info.iuse) then
                 local sval = specialVaue(rowData)
                 if not ifTable(sval) then
@@ -833,17 +852,16 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
                     ---填充val
                     table.insert(slist, sval)
                     table.insert(slist, ",")
+                else
+                    print("error:", info.iuse, self.isserver, rowData, sval)
                 end
             end
-           
         end
-        table.insert(slist, rowKey)
         table.insert(slist, ",")
     end
 
     table.insert(slist, "\n}")
     table.insert(slist, send)
-    logDebug({slist,rowField})
     return table.concat(slist)
 end
 

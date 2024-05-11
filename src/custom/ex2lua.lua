@@ -13,7 +13,7 @@ local ifString = require("ifString")
 ---缓存特殊值
 local uvcache = {}
 local function specialVaue(v)
-    return uvcache[v] and v
+    return uvcache[v] or v
 end
 
 local function s2number(s)

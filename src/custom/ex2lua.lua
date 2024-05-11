@@ -821,16 +821,20 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
                 ---填充val
                 local val = rowData[info.name]
                 table.insert(slist, specialVaue(val))
+                table.insert(slist, ",")
             elseif not self:isFilter(info.iuse) then
-                ---填充key
-                table.insert(slist, "[\"")
-                table.insert(slist, rowKey)
-                table.insert(slist, "\"]=")
-                ---填充val
                 local sval = specialVaue(rowData)
-                table.insert(slist, sval)
+                if not ifTable(sval) then
+                    ---填充key
+                    table.insert(slist, "[\"")
+                    table.insert(slist, rowKey)
+                    table.insert(slist, "\"]=")
+                    ---填充val
+                    table.insert(slist, sval)
+                    table.insert(slist, ",")
+                end
             end
-            table.insert(slist, ",")
+           
         end
         table.insert(slist, rowKey)
         table.insert(slist, ",")
@@ -838,7 +842,7 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
 
     table.insert(slist, "\n}")
     table.insert(slist, send)
-    logDebug(slist)
+    logDebug({slist,rowField})
     return table.concat(slist)
 end
 

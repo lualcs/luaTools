@@ -95,9 +95,15 @@ local function _t2sList(list, val, level, key, first)
                 table.insert(list, "=")
 
                 if ifString(v) then
-                    table.insert(list, "\"")
-                    table.insert(list, v)
-                    table.insert(list, "\"")
+                    if v:find("\n") then
+                        table.insert(list, "[[")
+                        table.insert(list, v)
+                        table.insert(list, "]]")
+                    else
+                        table.insert(list, "\"")
+                        table.insert(list, v)
+                        table.insert(list, "\"")
+                    end
                 else
                     table.insert(list, tostring(v))
                 end
@@ -108,9 +114,15 @@ local function _t2sList(list, val, level, key, first)
                 table.insert(list, "=")
 
                 if ifString(v) then
-                    table.insert(list, "\"")
-                    table.insert(list, v)
-                    table.insert(list, "\"")
+                    if v:find("\n") then
+                        table.insert(list, "[[")
+                        table.insert(list, v)
+                        table.insert(list, "]]")
+                    else
+                        table.insert(list, "\"")
+                        table.insert(list, v)
+                        table.insert(list, "\"")
+                    end
                 else
                     table.insert(list, tostring(v))
                 end

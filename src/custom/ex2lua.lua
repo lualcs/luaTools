@@ -11,7 +11,7 @@ local class = require("class")
 local ifString = require("ifString")
 
 ---缓存特殊值
-uvcache = {}
+local uvcache = {}
 local function specialVaue(v)
     return uvcache[v] and v
 end
@@ -224,7 +224,7 @@ function this:writef(fpath, data, emmy, line)
         emmy = emmy or ""
         local sbegin = emmy .. "\n" .. "return "
         local note
-        if self.srcData and self.rowField then 
+        if self.srcData and self.rowField then
             note = this:tstring(self.srcData, data, self.rowField, sbegin, nil)
         elseif line then
             note = t2string(data, sbegin, nil, self.rowSort)
@@ -418,27 +418,27 @@ function this:parseValue(stype, svalue)
         local vf = mapvfun[stype]
         local slist = gsplit(svalue, ",", clear(out1))
         local map = {}
-        local sls = {"{"}
+        local sls = { "{" }
         for _, s in ipairs(slist) do
             local kvs = gsplit(s, "=", clear(out2))
             local k = kf(kvs[1])
             local v = vf(kvs[2])
             map[k] = v
             ---填充key
-            table.insert(sls,"[")
-            table.insert(sls,k)
-            table.insert(sls,"]")
+            table.insert(sls, "[")
+            table.insert(sls, k)
+            table.insert(sls, "]")
             ---填充value
             if s2string ~= vf then
-                table.insert(sls,v)
+                table.insert(sls, v)
             else
                 ---字符串都用这种方式
-                table.insert(sls,"[[")
-                table.insert(sls,v)
-                table.insert(sls,"]]")
+                table.insert(sls, "[[")
+                table.insert(sls, v)
+                table.insert(sls, "]]")
             end
         end
-        table.insert(sls,"}")
+        table.insert(sls, "}")
         uvcache[map] = table.concat(sls)
         return map
     end
@@ -820,14 +820,14 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
                 table.insert(slist, "\"]=")
                 ---填充val
                 local val = rowData[info.name]
-                table.insert(slist,specialVaue(val))
-            else 
+                table.insert(slist, specialVaue(val))
+            else
                 ---填充key
                 table.insert(slist, "[\"")
                 table.insert(rowKey)
                 table.insert(slist, "\"]=")
                 ---填充val
-                table.insert(slist,specialVaue(rowData))
+                table.insert(slist, specialVaue(rowData))
             end
             table.insert(slist, ",")
         end
@@ -835,7 +835,7 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
         table.insert(slist, ",")
     end
 
-    table.insert(slist, ""\n"}")
+    table.insert(slist, "\n}")
     table.insert(slist, send)
     return table.concat(slist)
 end

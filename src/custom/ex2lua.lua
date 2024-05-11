@@ -795,6 +795,15 @@ function this:rowPars(cfgClass, rowData)
     return data
 end
 
+local table_insert = table.insert
+
+function table.insert(t, v)
+    if type(v) == "table" then
+        print(debug.traceback())
+    end
+    table_insert(t, v)
+end
+
 ---表数据转字符串
 ---@param tsrc any @原表数据
 ---@param tuse any @打表数据

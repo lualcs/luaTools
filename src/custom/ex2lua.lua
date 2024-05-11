@@ -843,16 +843,14 @@ end
 ---迭代器
 function this:t2pairs(t)
     local tsort = self.tsort
-    return function()
-        local preIdx = 0
-        local function fnext(t, k)
-            local mk = tsort[preIdx + 1]
-            preIdx = preIdx + 1
-            local mv = val[mk]
-            return mk, mv
-        end
-        return t, fnext, nil
+    local preIdx = 0
+    local function fnext(t, k)
+        local mk = tsort[preIdx + 1]
+        preIdx = preIdx + 1
+        local mv = val[mk]
+        return mk, mv
     end
+    return t, fnext, nil
 end
 
 return this

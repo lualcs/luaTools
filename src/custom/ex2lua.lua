@@ -429,7 +429,7 @@ function this:parseValue(stype, svalue)
             table.insert(sls,k)
             table.insert(sls,"]")
             ---填充value
-            if s2string != vf then
+            if s2string ~= vf then
                 table.insert(sls,v)
             else
                 ---字符串都用这种方式

@@ -853,7 +853,7 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
                     table.insert(slist, sval)
                     table.insert(slist, ",")
                 else
-                    print("error:", info.iuse, self.isserver, rowData, sval)
+                    print("error:", "info.iuse:",info.iuse,"self.isserver", self.isserver, "rowData",rowData,"sval:" sval,"colKey",colKey)
                 end
             end
         end

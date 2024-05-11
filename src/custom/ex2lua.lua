@@ -9,6 +9,7 @@ local default = require("table.default.table")
 local logDebug = require("logDebug")
 local class = require("class")
 local ifString = require("ifString")
+local ifTable = require("ifTable")
 
 ---缓存特殊值
 local uvcache = {}

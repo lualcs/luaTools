@@ -230,7 +230,7 @@ end
 ---@param line boolean|nil @是否换行
 function this:writeLuaCfg(fname, data, emmy)
     local fpath = self.writeDir .. fname .. self.wffix
-    this:writef(fpath, data, emmy, line)
+    self:writef(fpath, data, emmy, line)
 end
 
 ---生成md5码

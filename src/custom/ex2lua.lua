@@ -143,7 +143,6 @@ local this = class()
 ---@param param ex2luaParam
 function this:ctor(param)
     ---用于保存源数据内容
-    self.kv = {}
     self.isserver = param.isserver
     self.line = param.line and true or false
     ---目录
@@ -226,7 +225,7 @@ function this:writef(fpath, data, emmy, line)
         local sbegin = emmy .. "\n" .. "return "
         local note
         if self.srcData and self.rowField then
-            note = this:tstring(self.srcData, data, self.rowField, sbegin, nil)
+            note = self:tstring(self.srcData, data, self.rowField, sbegin, nil)
         elseif line then
             note = t2string(data, sbegin, nil, self.rowSort)
         else
@@ -844,17 +843,13 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
                 end
             elseif not self:isFilter(info.iuse) then
                 local sval = specialVaue(rowData)
-                if not ifTable(sval) then
-                    ---填充key
-                    table.insert(slist, "[\"")
-                    table.insert(slist, rowKey)
-                    table.insert(slist, "\"]=")
-                    ---填充val
-                    table.insert(slist, sval)
-                    table.insert(slist, ",")
-                else
-                    print("error:", "info.iuse:",info.iuse,"self.isserver", self.isserver, "rowData",rowData,"sval:", sval,"colKey",colKey)
-                end
+                ---填充key
+                table.insert(slist, "[\"")
+                table.insert(slist, rowKey)
+                table.insert(slist, "\"]=")
+                ---填充val
+                table.insert(slist, sval)
+                table.insert(slist, ",")
             end
         end
         table.insert(slist, ",")

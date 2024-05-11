@@ -852,7 +852,6 @@ function this:tstring(tsrc, tuse, rowField, sbegin, send)
                 table.insert(slist, ",")
             end
         end
-        table.insert(slist, ",")
     end
 
     table.insert(slist, "\n}")

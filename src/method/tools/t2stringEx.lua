@@ -75,7 +75,7 @@ local function _t2sList(list, val, level, key, first)
         end
     end
 
-    for k, v in pairs(val) do
+    for k, v in fpars(val) do
         --v是table k非table
         if ifTable(v) then
             if not tmap[v] then

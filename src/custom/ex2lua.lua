@@ -488,6 +488,12 @@ function this:structPars(data, name)
     for i, row in ipairs(data) do
         local cname = row[1]
 
+        if nil ~= rawget(struct, cname) then
+            logDebug({
+                error = "this:structPars key repeat"
+            })
+        end
+
         ---生成对象名称注解
         local idesc = self.excel:getComment(i, 1)
         table.insert(semmys, "---@class ")
@@ -501,6 +507,7 @@ function this:structPars(data, name)
                 local s = gsplit(str, ":", clear(out))
                 local index = j - 1
                 local jdesc = self.excel:getComment(i, j)
+
                 struct[cname][index] = {
                     name = s[1],
                     type = s[2],
@@ -557,6 +564,11 @@ function this:gobalsPars(data, name)
         local field = info[2]
         local stype = info[3]
         local svalue = info[4]
+        if nil ~= rawget(cfg, field) then
+            logDebug({
+                error = "this:gobalsPars key repeat"
+            })
+        end
         cfg[field] = self:parseValue(stype, svalue)
         table.insert(rowSort, field)
         table.insert(emmy, "---@field ")
@@ -631,10 +643,16 @@ function this:configPars(data, name)
                 break
             end
             local key = info[1]
+            if nil ~= rawget(key, key) then
+                logDebug({
+                    error = "this:configPars key repeat"
+                })
+            end
             cfg[key] = rowData
             table.insert(rowSort, key)
             if nil == key then
                 logDebug({
+                    error = "this:configPars key is nil"
                     name = name,
                     info = info,
                 })

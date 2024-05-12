@@ -10,12 +10,7 @@ local logDebug = require("logDebug")
 local class = require("class")
 local ifString = require("ifString")
 local ifTable = require("ifTable")
-
----缓存特殊值
-local uvcache = {}
-local function specialVaue(v)
-    return uvcache[v] or v
-end
+local super = require("unknown")
 
 local function s2number(s)
     if "nil" == s or nil == s then
@@ -50,9 +45,7 @@ end
 
 local function s2table(s)
     if not s then
-        local ret = {}
-        uvcache[ret] = "{}"
-        return ret
+        return {}
     end
 
     local f = loadstring("return " .. s)
@@ -63,9 +56,7 @@ local function s2table(s)
             return s
         end
     end
-    local ret = f()
-    uvcache[ret] = s
-    return ret
+    return f()
 end
 
 ---基础转换
@@ -120,8 +111,8 @@ local mapvfun = {
     ["table<boolean,string>"] = s2string,
 }
 
----@class excel2luaconfig @excel转lua配置表
-local this = class()
+---@class excel2luaconfig:unknown @excel转lua配置表
+local this = class(super)
 
 ---@class ex2luaParam @ex2lua参数
 ---@field readDir string @excel目录
@@ -224,9 +215,7 @@ function this:writef(fpath, data, emmy, line)
         emmy = emmy or ""
         local sbegin = emmy .. "\n" .. "return "
         local note
-        if self.srcData and self.rowField then
-            note = self:tstring(self.srcData, data, self.rowField, sbegin, nil)
-        elseif line then
+        if line then
             note = t2string(data, sbegin, nil, self.rowSort)
         else
             note = t2stringEx(data, sbegin, nil, self.rowSort)
@@ -439,7 +428,6 @@ function this:parseValue(stype, svalue)
             end
         end
         table.insert(sls, "}")
-        uvcache[map] = table.concat(sls)
         return map
     end
 
@@ -711,13 +699,7 @@ function this:configPars(data, name)
         table.insert(emmy, name)
         table.insert(emmy, ">")
         ---保存解析文件
-        self.rowSort = rowSort
-        self.srcData = data
-        self.rowField = cfgClass
         self:writeLuaCfg(name, cfg, table.concat(emmy), self.line)
-        self.rowSort = nil
-        self.srcData = nil
-        self.rowField = nil
     end
 end
 
@@ -793,94 +775,6 @@ function this:rowPars(cfgClass, rowData)
         end
     end
     return data
-end
-
----表数据转字符串
----@param tsrc any @原表数据
----@param tuse any @打表数据
----@param rowField lua_struct[]@行数据
----@return string @
-function this:tstring(tsrc, tuse, rowField, sbegin, send)
-    local colLen = #rowField
-    local slist = { sbegin, "{" }
-    for rowKey, rowData in self:t2pairs(tuse) do
-        ---换行
-        table.insert(slist, "\n")
-        if ifString(rowKey) then
-            ---填充key
-            table.insert(slist, "[\"")
-            table.insert(slist, rowKey)
-            table.insert(slist, "\"]=")
-        else
-            ---填充key
-            table.insert(slist, "[")
-            table.insert(slist, rowKey)
-            table.insert(slist, "]=")
-        end
-        ---填充行
-        for col, info in ipairs(rowField) do
-            local colKey = info.name
-            if nil ~= rowData[colKey] then
-                if ifString(colKey) then
-                    ---填充key
-                    table.insert(slist, "[\"")
-                    table.insert(slist, colKey)
-                    table.insert(slist, "\"]=")
-                else
-                    ---填充key
-                    table.insert(slist, "[")
-                    table.insert(slist, colKey)
-                    table.insert(slist, "]=")
-                end
-
-
-                if info.type == "string" then
-                    ---填充val
-                    local val = rowData[info.name]
-                    local tar = specialVaue(val)
-                    table.insert(slist, "[[")
-                    table.insert(slist, tar)
-                    table.insert(slist, "]],")
-                else
-                    ---填充val
-                    local val = rowData[info.name]
-                    local tar = specialVaue(val)
-                    table.insert(slist, tar)
-                    table.insert(slist, ",")
-                end
-            elseif not self:isFilter(info.iuse) then
-                local sval = specialVaue(rowData)
-                ---填充key
-                table.insert(slist, "[\"")
-                table.insert(slist, rowKey)
-                table.insert(slist, "\"]=")
-                ---填充val
-                table.insert(slist, sval)
-                table.insert(slist, ",")
-            end
-        end
-    end
-
-    table.insert(slist, "\n}")
-    table.insert(slist, send)
-    return table.concat(slist)
-end
-
----迭代器
-function this:t2pairs(t)
-    local tsort = self.tsort
-    if not tsort then
-        return pairs(t)
-    end
-
-    local preIdx = 0
-    local function fnext(t, k)
-        local mk = tsort[preIdx + 1]
-        preIdx = preIdx + 1
-        local mv = val[mk]
-        return mk, mv
-    end
-    return fnext, t, nil
 end
 
 return this

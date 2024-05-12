@@ -67,14 +67,14 @@ local function _t2sList(list, val, level, key, first)
     local fpars = pairs
     if first and tsort then
         local preIdx = 0
-        local function fnext(t,k)
+        local function fnext(t, k)
             local mk = tsort[preIdx + 1]
             preIdx = preIdx + 1
             local mv = val[mk]
             return mk, mv
         end
         fpars = function(t, k)
-            return fnext, t, nil 
+            return fnext, t, nil
         end
     end
 

@@ -381,12 +381,7 @@ local out2 = {}
 ---解析数据
 ---@param stype string @类型
 ---@param svalue string @配置值
-function this:parseValue(stype, svalue)
-    ---默认值处理
-    local tps = gsplit(tostring(stype), ":", clear(out0))
-    stype = tps[1]
-    local defv = tps[2]
-
+function this:parseValue(stype, svalue, defv)
     local struct = self.struct
     ---基础类型
     local bf = baseconver[stype]
@@ -642,7 +637,7 @@ function this:configPars(data, name)
                     error = "this:configPars key repeat",
                 })
             end
-           
+
             if nil == key then
                 logDebug({
                     error = "this:configPars key is nil",
@@ -744,7 +739,7 @@ function this:rowPars(cfgClass, rowData)
             ---跳过过滤
         else
             local sname = colInfo.name
-            local cvalue = self:parseValue(stype, svalue)
+            local cvalue = self:parseValue(stype, svalue, colInfo.defv)
             data[sname] = cvalue
         end
     end

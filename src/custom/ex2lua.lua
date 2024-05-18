@@ -615,8 +615,8 @@ function this:configPars(data, name)
             name = name,
             type = tpls[1],
             desc = descrs[index],
-            iuse = s2usetype(iuse)
-            defv = tpls[2]
+            iuse = s2usetype(iuse),
+            defv = tpls[2],
         })
         cfgSorts[name] = index
     end

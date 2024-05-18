@@ -27,7 +27,7 @@ local function s2string(s)
 end
 
 local function s2boolean(s)
-    if true == s or false == s then  
+    if true == s or false == s then
         return s
     elseif "nil" == s or nil == s or "" == s then
         return nil
@@ -388,10 +388,13 @@ function this:parseValue(stype, svalue, defv)
     ---基础类型
     local bf = baseconver[stype]
     if bf then
-        local v = bf(svalue) 
-        if nil == v and defv then  
-            v = bf(defv) 
+        print("1", stype, svalue, defv)
+        local v = bf(svalue)
+        if nil == v and defv then
+            v = bf(defv)
+            print("2", v)
         end
+        print("3", v)
         return v
     end
 

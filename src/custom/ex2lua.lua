@@ -636,14 +636,14 @@ function this:configPars(data, name)
             local key = info[1]
             if nil ~= rawget(key, key) then
                 logDebug({
-                    error = "this:configPars key repeat"
+                    error = "this:configPars key repeat",
                 })
             end
             cfg[key] = rowData
             table.insert(rowSort, key)
             if nil == key then
                 logDebug({
-                    error = "this:configPars key is nil"
+                    error = "this:configPars key is nil",
                     name = name,
                     info = info,
                 })

@@ -367,9 +367,6 @@ function this:excelForRead(callback, ...)
         for col = 1, colMax do
             repeat
                 local v = e:getGird(row, col)
-                if not v then
-                    break
-                end
                 data[row][col] = v
             until true
         end
@@ -742,7 +739,7 @@ function this:rowPars(cfgClass, rowData)
         local stype = colInfo.type
         if stype:find("|") then
             mmap[colInfo.name] = colInfo
-        elseif (not svalue) and (stype ~= "table") and (not colInfo.defv) then
+        elseif (nil == svalue) and (stype ~= "table") and (nill colInfo.defv) then
             ---过滤空值-或者默认表
         elseif self:isFilter(colInfo.iuse) then
             ---跳过过滤

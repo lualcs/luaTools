@@ -44,7 +44,7 @@ local function s2usetype(s)
 end
 
 local function s2table(s)
-    if not s then
+    if not s or "" == s then
         return {}
     end
 
@@ -375,12 +375,18 @@ function this:excelForRead(callback, ...)
     callback(self, data, ...)
 end
 
+local out0 = {}
 local out1 = {}
 local out2 = {}
 ---解析数据
 ---@param stype string @类型
 ---@param svalue string @配置值
 function this:parseValue(stype, svalue)
+    ---默认值处理
+    local tps = gsplit(svalue, ":", clear(out0))
+    svalue = tps[1]
+    local defv = tps[2]
+    
     local struct = self.struct
     ---基础类型
     local bf = baseconver[stype]
@@ -395,7 +401,7 @@ function this:parseValue(stype, svalue)
         local slist = gsplit(svalue, ";", clear(out1))
         local array = {}
         for i, s in ipairs(slist) do
-            array[i] = bf(s)
+            array[i] = bf(s) or bf(defv)
         end
         return array
     end
@@ -407,27 +413,12 @@ function this:parseValue(stype, svalue)
         local vf = mapvfun[stype]
         local slist = gsplit(svalue, ",", clear(out1))
         local map = {}
-        local sls = { "{" }
         for _, s in ipairs(slist) do
             local kvs = gsplit(s, "=", clear(out2))
             local k = kf(kvs[1])
             local v = vf(kvs[2])
             map[k] = v
-            ---填充key
-            table.insert(sls, "[")
-            table.insert(sls, k)
-            table.insert(sls, "]")
-            ---填充value
-            if s2string ~= vf then
-                table.insert(sls, v)
-            else
-                ---字符串都用这种方式
-                table.insert(sls, "[[")
-                table.insert(sls, v)
-                table.insert(sls, "]]")
-            end
         end
-        table.insert(sls, "}")
         return map
     end
 

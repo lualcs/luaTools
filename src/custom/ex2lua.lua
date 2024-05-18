@@ -46,7 +46,7 @@ local function s2usetype(s)
 end
 
 local function s2table(s)
-    if not s or "" == s or "" == s then
+    if not s or "" == s then
         return {}
     end
 
@@ -61,12 +61,23 @@ local function s2table(s)
     return f()
 end
 
+local date = {}
+local function s2datetime(s)
+    if nil == s or false == s or "" == s then
+        return 0
+    end
+    local p = "(%d+)-(%d+)-(%d+) (%d+):(%d+):(%d+)"
+    date.year, date.month, date.day, date.hour, date.min, date.sec = s:match(p)
+    return os.time(date)
+end
+
 ---基础转换
 local baseconver = {
     ["number"] = s2number,
     ["string"] = s2string,
     ["boolean"] = s2boolean,
-    ["table"] = s2table
+    ["table"] = s2table,
+    ["datetime"] = s2datetime,
 }
 
 ---分割字符
@@ -74,6 +85,7 @@ local arrayplit = {
     ["number[]"] = ";",
     ["string[]"] = ";",
     ["boolean[]"] = ";",
+    ["datetime[]"] = ";",
 }
 
 ---分割字符

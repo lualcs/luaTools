@@ -116,6 +116,7 @@
         "mapvfun",
         "ibegin",
         "iend",
-        "tpls"
+        "tpls",
+        "datetime"
     ]
 }

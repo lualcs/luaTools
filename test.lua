@@ -1,19 +1,10 @@
-local function s2boolean(s)
-    if true == s or false == s then
-        return s
-    elseif "nil" == s or nil == s or "" == s then
-        return nil
+local date = {}
+local function s2datetime(s)
+    if nil == s or false == s or "" == s then
+        return 0
     end
-    local n = tonumber(s)
-    return (0 ~= n) and true or false
+    local p = "(%d+)-(%d+)-(%d+) (%d+):(%d+):(%d+)"
+    date.year, date.month, date.day, date.hour, date.min, date.sec = s:match(p)
+    return os.time(date)
 end
-
-local function test(svalue, defv)
-    local v = s2boolean(svalue)
-    if nil == v and defv then
-        return s2boolean(defv)
-    end
-    return v
-end
-
-print(test(false, "true"))
+print(s2datetime(""))

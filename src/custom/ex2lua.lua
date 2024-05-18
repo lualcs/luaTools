@@ -71,6 +71,15 @@ local function s2datetime(s)
     return os.time(date)
 end
 
+function s2spacer(s)
+    if nil == s or false == s or "" == s then
+        return 0
+    end
+    local p = "(%d+) (%d+):(%d+):(%d+)"
+    local day, hour, min, sec = s:match(p)
+    return day * 86400 + hour * 3600 + min * 60 + sec
+end
+
 ---基础转换
 local baseconver = {
     ["number"] = s2number,
@@ -78,6 +87,7 @@ local baseconver = {
     ["boolean"] = s2boolean,
     ["table"] = s2table,
     ["datetime"] = s2datetime,
+    ["spacer"] = s2spacer,
 }
 
 ---分割字符
@@ -86,6 +96,7 @@ local arrayplit = {
     ["string[]"] = ";",
     ["boolean[]"] = ";",
     ["datetime[]"] = ";",
+    ["spacer[]"] = ";",
 }
 
 ---分割字符

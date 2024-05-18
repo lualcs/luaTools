@@ -13,7 +13,7 @@ local ifTable = require("ifTable")
 local super = require("unknown")
 
 local function s2number(s)
-    if "nil" == s or nil == s then
+    if "nil" == s or nil == s or "" == s then
         return
     end
     return tonumber(s)
@@ -27,7 +27,7 @@ local function s2string(s)
 end
 
 local function s2boolean(s)
-    if "nil" == s or nil == s then
+    if "nil" == s or nil == s or "" == s then
         return
     end
     local n = tonumber(s)
@@ -44,7 +44,7 @@ local function s2usetype(s)
 end
 
 local function s2table(s)
-    if not s or "" == s then
+    if not s or "" == s or "" == s then
         return {}
     end
 
@@ -386,7 +386,7 @@ function this:parseValue(stype, svalue, defv)
     ---基础类型
     local bf = baseconver[stype]
     if bf then
-        return bf(svalue)
+        return bf(svalue) or bf(defv)
     end
 
     ---基础数组

@@ -386,7 +386,11 @@ function this:parseValue(stype, svalue, defv)
     ---基础类型
     local bf = baseconver[stype]
     if bf then
-        return bf(svalue) or bf(defv)
+        local v = bf(svalue) 
+        if nil == v then  
+            return bf(defv) 
+        end
+        return v
     end
 
     ---基础数组
@@ -396,7 +400,7 @@ function this:parseValue(stype, svalue, defv)
         local slist = gsplit(svalue, ";", clear(out1))
         local array = {}
         for i, s in ipairs(slist) do
-            array[i] = bf(s) or bf(defv)
+            array[i] = bf(s)
         end
         return array
     end

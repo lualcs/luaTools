@@ -739,7 +739,7 @@ function this:rowPars(cfgClass, rowData)
         local stype = colInfo.type
         if stype:find("|") then
             mmap[colInfo.name] = colInfo
-        elseif (nil == svalue) and (stype ~= "table") and (nill colInfo.defv) then
+        elseif (nil == svalue) and (stype ~= "table") and (nil == colInfo.defv) then
             ---过滤空值-或者默认表
         elseif self:isFilter(colInfo.iuse) then
             ---跳过过滤

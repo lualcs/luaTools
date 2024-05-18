@@ -385,13 +385,10 @@ function this:parseValue(stype, svalue, defv)
     ---基础类型
     local bf = baseconver[stype]
     if bf then
-        print("1", stype, svalue, defv)
         local v = bf(svalue)
         if nil == v and defv then
             v = bf(defv)
-            print("2", v)
         end
-        print("3", v)
         return v
     end
 

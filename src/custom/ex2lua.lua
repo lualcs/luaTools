@@ -390,7 +390,7 @@ function this:parseValue(stype, svalue, defv)
     if bf then
         local v = bf(svalue) 
         if nil == v and defv then  
-            return bf(defv) 
+            v = bf(defv) 
         end
         return v
     end

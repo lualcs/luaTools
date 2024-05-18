@@ -383,8 +383,8 @@ local out2 = {}
 ---@param svalue string @配置值
 function this:parseValue(stype, svalue)
     ---默认值处理
-    local tps = gsplit(tostring(svalue), ":", clear(out0))
-    svalue = tps[1]
+    local tps = gsplit(tostring(stype), ":", clear(out0))
+    stype = tps[1]
     local defv = tps[2]
 
     local struct = self.struct
@@ -616,6 +616,7 @@ function this:configPars(data, name)
             type = tpls[1],
             desc = descrs[index],
             iuse = s2usetype(iuse)
+            defv = tpls[2]
         })
         cfgSorts[name] = index
     end
@@ -737,7 +738,7 @@ function this:rowPars(cfgClass, rowData)
         local stype = colInfo.type
         if stype:find("|") then
             mmap[colInfo.name] = colInfo
-        elseif (not svalue) and (stype ~= "table") then
+        elseif (not svalue) and (stype ~= "table") and (not colInfo.defv) then
             ---过滤空值-或者默认表
         elseif self:isFilter(colInfo.iuse) then
             ---跳过过滤

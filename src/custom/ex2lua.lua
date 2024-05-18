@@ -383,7 +383,7 @@ local out2 = {}
 ---@param svalue string @配置值
 function this:parseValue(stype, svalue)
     ---默认值处理
-    local tps = gsplit(svalue, ":", clear(out0))
+    local tps = gsplit(tostring(svalue), ":", clear(out0))
     svalue = tps[1]
     local defv = tps[2]
     

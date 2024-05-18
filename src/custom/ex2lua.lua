@@ -636,13 +636,12 @@ function this:configPars(data, name)
                 break
             end
             local key = info[1]
-            if nil ~= rawget(key, key) then
+            if nil ~= rawget(cfg, key) then
                 logDebug({
                     error = "this:configPars key repeat",
                 })
             end
-            cfg[key] = rowData
-            table.insert(rowSort, key)
+           
             if nil == key then
                 logDebug({
                     error = "this:configPars key is nil",
@@ -650,7 +649,9 @@ function this:configPars(data, name)
                     info = info,
                 })
             end
-            cfg[info[1]] = rowData
+
+            table.insert(rowSort, key)
+            cfg[key] = rowData
         until true
     end
 
@@ -710,7 +711,9 @@ function this:configPars(data, name)
         table.insert(emmy, name)
         table.insert(emmy, ">")
         ---保存解析文件
+        self.rowSort = rowSort
         self:writeLuaCfg(name, cfg, table.concat(emmy), self.line)
+        self.rowSort = nil
     end
 end
 

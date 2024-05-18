@@ -160,5 +160,20 @@ build = {
       ["mahjong.cfg.mapSnaps"] = "src/mahjong/cfg/mapSnaps.lua",
       ["mahjong.cfg.mapStraight"] = "src/mahjong/cfg/mapStraight.lua",
       ["mahjong.cfg.mapViews"] = "src/mahjong/cfg/mapViews.lua",
+      cmahjong = {
+         sources = { "./src/c/cmahjong.c"},
+         defines = {
+         }
+      },
+      cutworks = {
+         sources = { "./src/c/cutworks.c"},
+         defines = {
+         }
+      },
+      usertime = {
+         sources = { "./src/c/usertime.c"},
+         defines = {
+         }
+      },
    }
 }

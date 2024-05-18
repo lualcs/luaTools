@@ -27,8 +27,10 @@ local function s2string(s)
 end
 
 local function s2boolean(s)
-    if "nil" == s or nil == s or "" == s then
-        return
+    if true == s or false == s then  
+        return s
+    elseif "nil" == s or nil == s or "" == s then
+        return nil
     end
     local n = tonumber(s)
     return (0 ~= n) and true or false
@@ -387,7 +389,7 @@ function this:parseValue(stype, svalue, defv)
     local bf = baseconver[stype]
     if bf then
         local v = bf(svalue) 
-        if nil == v then  
+        if nil == v and defv then  
             return bf(defv) 
         end
         return v

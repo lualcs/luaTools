@@ -386,7 +386,7 @@ function this:parseValue(stype, svalue)
     local tps = gsplit(tostring(svalue), ":", clear(out0))
     svalue = tps[1]
     local defv = tps[2]
-    
+
     local struct = self.struct
     ---基础类型
     local bf = baseconver[stype]
@@ -609,9 +609,11 @@ function this:configPars(data, name)
     local cfgSorts = {}
     for index, name in ipairs(fields) do
         local iuse = self.excel:getComment(2, index)
+        local stype = typels[index]
+        local tpls = gsplit(tostring(stype), ":", out0)
         table.insert(cfgClass, {
             name = name,
-            type = typels[index],
+            type = tpls[1],
             desc = descrs[index],
             iuse = s2usetype(iuse)
         })

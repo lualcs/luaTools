@@ -1,28 +1,6 @@
-print(package.path)
-
-local transaction = require("optimize.transaction")
-local commit = require("optimize.commit")
-local rollback = require("optimize.rollback")
-local change = require("optimize.change")
 local logDebug = require("logDebug")
-
-local ori = {
-    lv = 10,
-    exp = 0,
-    gold = 1000
-}
-
-local tran = transaction(ori, 0)
+local gsplit = require("string.gsplit")
 
 
-tran.lv = 0
-tran.exp = 1
-tran.gold = 0
-
-local cmt = commit()
-
-logDebug(cmt)
-
-local msg = change(cmt, ori, {}, "role")
-
-logDebug(msg)
+logDebug(gsplit("number:0", ":", {}))
+logDebug(gsplit("number", ":", {}))

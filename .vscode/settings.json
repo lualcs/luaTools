@@ -117,6 +117,11 @@
         "ibegin",
         "iend",
         "tpls",
-        "datetime"
+        "datetime",
+        "skynet",
+        "maxloops",
+        "pauset",
+        "inow",
+        "reder"
     ]
 }

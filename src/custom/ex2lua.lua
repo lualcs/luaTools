@@ -45,6 +45,7 @@ local function s2usetype(s)
     return "all" ---都需要
 end
 
+---lua任意数据类型
 local function s2table(s)
     if not s or "" == s then
         return {}
@@ -62,6 +63,7 @@ local function s2table(s)
 end
 
 local date = {}
+---日期转时间戳
 local function s2datetime(s)
     if nil == s or false == s or "" == s then
         return 0
@@ -71,7 +73,8 @@ local function s2datetime(s)
     return os.time(date)
 end
 
-function s2spacer(s)
+---日期字符串转秒数
+local function s2spacer(s)
     if nil == s or false == s or "" == s then
         return 0
     end

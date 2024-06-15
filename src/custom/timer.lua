@@ -24,7 +24,6 @@ function this:ctor()
     ---清理处理
     self:clear()
     ---定时函数
-   
 end
 
 ---启动函数
@@ -129,6 +128,20 @@ function this:resetTimer(iden)
 
     ---重置时间
     local tick = self:time() + tnode.data.elapse
+    self._heap:adjustBy(iden, tick)
+end
+
+---下一帧就触发
+---@param iden timeId @唯一定时器
+function this:frameTime(iden)
+    ---找到数据
+    local _, tnode = self._heap:search(iden)
+    if not tnode then
+        return
+    end
+
+    ---重置时间
+    local tick = self:time()
     self._heap:adjustBy(iden, tick)
 end
 

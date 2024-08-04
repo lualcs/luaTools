@@ -157,14 +157,24 @@ function this:removeByID(iden)
         reusable:set(tnode.data)
 
         ---清除标识
+        local name = idens[iden]
         idens[iden] = nil
 
         ---全局标识
-        local name = names[iden]
         if name then
             names[name] = nil
         end
     end
+end
+
+---删除定时
+---@param name    string      @名称
+function this:removeByName(iden)
+    local name = self._idens[iden]
+    if not name then
+        return
+    end
+    return self:removeByID(iden)
 end
 
 ---剩余时间

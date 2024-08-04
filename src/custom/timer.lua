@@ -317,7 +317,11 @@ function this:execute()
 
     ---每次只调用一个定时
     local args = item.args
-    item.call(args and table.unpack(args) or nil)
+    if not args then
+        item.call()
+    else
+        item.call(table.unpack(args))
+    end
     return true
 end
 
